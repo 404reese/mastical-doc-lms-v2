@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Cardiac Surgery Techniques - Dr. Gaurang Gaikwad</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CSS Reset & Variables --- */
+        :root {
+            --primary-blue: #2563EB;
+            --primary-dark: #1D4ED8;
+            --text-dark: #1E3A8A;
+            /* Navy for Headings */
+            --text-body: #4B5563;
+            /* Grey 600 */
+            --text-light: #6B7280;
+            /* Grey 500 */
+            --bg-light: #F9FAFB;
+            --white: #ffffff;
+            --border-color: #E5E7EB;
+            --admin-color: #EF4444;
+            --footer-bg: #172554;
+            --font-main: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-body);
+            line-height: 1.6;
+            background-color: var(--white);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            color: #111827;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.2s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            font-family: var(--font-main);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--primary-blue);
+            color: var(--primary-blue);
+            background: transparent;
+        }
+
+        /* --- Navbar (Consistent with previous) --- */
+        .navbar {
+            padding: 1.2rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: #0EA5E9;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+            font-weight: 700;
+            color: #0F172A;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .nav-links .admin-link {
+            color: var(--admin-color);
+            font-weight: 600;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .lang-selector {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .nav-btn {
+            width: auto;
+            padding: 0.6rem 1.4rem;
+        }
+
+        /* --- Breadcrumbs --- */
+        .breadcrumbs {
+            padding: 2rem 0 1rem 0;
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .breadcrumbs span {
+            margin: 0 8px;
+            color: #9CA3AF;
+        }
+
+        /* --- Layout Grid --- */
+        .course-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 4rem;
+            margin-bottom: 5rem;
+            position: relative;
+        }
+
+        /* --- Main Content (Left) --- */
+        .course-header h1 {
+            font-size: 2.5rem;
+            color: #0F172A;
+            /* Darker Navy */
+            margin-bottom: 1rem;
+        }
+
+        .course-subtitle {
+            font-size: 1.1rem;
+            color: #4B5563;
+            margin-bottom: 1.5rem;
+        }
+
+        .course-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: #4B5563;
+            margin-bottom: 3rem;
+        }
+
+        .course-meta i {
+            margin-right: 5px;
+            color: #6B7280;
+        }
+
+        .course-meta a {
+            color: var(--primary-blue);
+            text-decoration: underline;
+        }
+
+        /* Sections */
+        .content-section {
+            margin-bottom: 3rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .content-section p {
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        .requirements-list {
+            list-style: disc;
+            padding-left: 1.5rem;
+            color: #374151;
+        }
+
+        .requirements-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Course Content Accordion */
+        .accordion-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 1rem;
+        }
+
+        .accordion-header-row span {
+            font-size: 0.9rem;
+            color: #4B5563;
+        }
+
+        .expand-link {
+            color: var(--primary-blue);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .accordion-item {
+            border: 1px solid var(--border-color);
+            margin-bottom: -1px;
+            /* Collapse borders */
+        }
+
+        .accordion-item:first-child {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .accordion-item:last-child {
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .accordion-trigger {
+            background: #F9FAFB;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .accordion-meta {
+            font-size: 0.85rem;
+            color: #6B7280;
+            font-weight: 400;
+        }
+
+        .accordion-trigger i {
+            transition: transform 0.3s;
+        }
+
+        .accordion-trigger.active i {
+            transform: rotate(180deg);
+        }
+
+        /* Instructor */
+        .instructor-card {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            margin-top: 1.5rem;
+        }
+
+        .instructor-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .instructor-info h3 {
+            font-size: 1.2rem;
+            color: var(--primary-blue);
+            margin-bottom: 0.2rem;
+        }
+
+        .instructor-role {
+            display: block;
+            font-size: 0.95rem;
+            color: #111827;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .instructor-bio {
+            font-size: 0.9rem;
+            color: #4B5563;
+        }
+
+        /* --- Sidebar (Right) --- */
+        .sidebar-wrapper {
+            position: relative;
+        }
+
+        .course-sidebar {
+            position: sticky;
+            top: 2rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 2px;
+            /* Slight radius per design */
+            overflow: hidden;
+        }
+
+        .preview-container {
+            position: relative;
+            height: 220px;
+            background: #000;
+            cursor: pointer;
+        }
+
+        .preview-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+        }
+
+        .play-btn {
+            background: white;
+            color: #111827;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .preview-text {
+            font-weight: 600;
+            font-size: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar-content {
+            padding: 2rem;
+        }
+
+        .price-area {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .current-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .original-price {
+            font-size: 1.1rem;
+            color: #6B7280;
+            text-decoration: line-through;
+        }
+
+        .discount {
+            font-size: 1rem;
+            color: #6B7280;
+        }
+
+        .sidebar-links {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .sidebar-links a {
+            text-decoration: underline;
+            color: #6B7280;
+        }
+
+        .includes-title {
+            font-weight: 700;
+            color: #111827;
+            margin: 2rem 0 1rem 0;
+            font-size: 1rem;
+        }
+
+        .includes-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: #374151;
+        }
+
+        .includes-list i {
+            width: 20px;
+            text-align: center;
+            color: #4B5563;
+        }
+
+        /* --- Footer (Consistent) --- */
+        .footer {
+            background-color: var(--footer-bg);
+            color: #94a3b8;
+            padding-top: 5rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 3rem;
+            padding-bottom: 4rem;
+        }
+
+        .white-logo .logo-text,
+        .white-logo .logo-icon {
+            color: white;
+        }
+
+        .footer-brand p {
+            margin: 1.5rem 0;
+            line-height: 1.6;
+            max-width: 300px;
+            font-size: 0.9rem;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icons a {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+        }
+
+        .footer h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-contact li {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom {
+            background-color: #0B1120;
+            padding: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .flex-bottom {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .bottom-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 1024px) {
+            .course-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .sidebar-wrapper {
+                order: -1;
+                /* Move sidebar to top on mobile/tablet if desired, or keep default */
+            }
+
+            .course-sidebar {
+                position: static;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .course-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .course-meta {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .instructor-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .flex-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .bottom-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-star-of-life"></i></div>
+                <div class="logo-text">
+                    <span>Dr Gaurang</span>
+                    <span>Gaikwad</span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Courses</a></li>
+                <li><a href="#">Forums</a></li>
+                <li><a href="#" class="admin-link">Admin</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="lang-selector">
+                    <i class="fa-solid fa-globe"></i> EN
+                </div>
+                <button class="btn btn-primary nav-btn">Get Started</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs">
+            Home <span>></span> Courses <span>></span> Surgery
+        </div>
+
+        <div class="course-layout">
+            <!-- Left Column: Main Content -->
+            <main>
+                <div class="course-header">
+                    <h1>Advanced Cardiac Surgery Techniques</h1>
+                    <p class="course-subtitle">Master cutting-edge cardiac surgical procedures with hands-on simulations
+                        and expert guidance from leading cardiothoracic surgeons.</p>
+
+                    <div class="course-meta">
+                        <span>Created by <a href="#">Dr. Sarah Johnson</a></span>
+                        <span><i class="fa-solid fa-circle-exclamation"></i> Last updated 11/2024</span>
+                        <span><i class="fa-solid fa-globe"></i> English</span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <section class="content-section">
+                    <h2>Description</h2>
+                    <p>This comprehensive course offers an in-depth exploration of advanced cardiac surgical techniques,
+                        designed for experienced surgeons looking to enhance their skills in the rapidly evolving field
+                        of cardiothoracic surgery. Through a combination of theoretical knowledge, hands-on simulations,
+                        and live case studies, participants will master cutting-edge procedures including minimally
+                        invasive cardiac surgery, robotic-assisted procedures, and complex valve repairs. The curriculum
+                        covers the latest innovations in surgical technology, patient selection criteria, risk
+                        assessment, and post-operative care protocols.</p>
+                    <p>This course is designed to take you from a complete beginner to an advanced practitioner. We
+                        cover everything from the fundamentals to complex real-world scenarios.</p>
+                </section>
+
+                <!-- Requirements -->
+                <section class="content-section">
+                    <h2>Requirements</h2>
+                    <ul class="requirements-list">
+                        <li>No prior experience required.</li>
+                        <li>A willingness to learn and clear some time for practice.</li>
+                        <li>Access to a computer with internet connection.</li>
+                    </ul>
+                </section>
+
+                <!-- Course Content -->
+                <section class="content-section">
+                    <h2>Course content</h2>
+                    <div class="accordion-header-row">
+                        <span>2 sections • 24 lectures • 12 weeks total length</span>
+                        <span class="expand-link">Expand all sections</span>
+                    </div>
+
+                    <div class="accordion">
+                        <!-- Section 1 -->
+                        <div class="accordion-item">
+                            <div class="accordion-trigger active">
+                                <span>Fundamentals of Advanced Cardiac Surgery</span>
+                                <span class="accordion-meta">3 lectures • 45min &nbsp; <i
+                                        class="fa-solid fa-chevron-down"></i></span>
+                            </div>
+                        </div>
+                        <!-- Section 2 -->
+                        <div class="accordion-item">
+                            <div class="accordion-trigger">
+                                <span>Minimally Invasive Procedures</span>
+                                <span class="accordion-meta">3 lectures • 45min &nbsp; <i
+                                        class="fa-solid fa-chevron-down"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Instructor -->
+                <section class="content-section">
+                    <h2>Instructor</h2>
+                    <div class="instructor-card">
+                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"
+                            alt="Dr Sarah Johnson" class="instructor-img">
+                        <div class="instructor-info">
+                            <h3>Dr. Sarah Johnson</h3>
+                            <span class="instructor-role">Chief Cardiothoracic Surgeon</span>
+                            <p class="instructor-bio">Dr. Sarah Johnson is a world-renowned cardiothoracic surgeon with
+                                over 20 years of experience in complex cardiac procedures. She has performed over 3,000
+                                cardiac surgeries and is a pioneer in minimally invasive cardiac surgery techniques. Dr.
+                                Johnson is currently the Chief of Cardiothoracic Surgery at Johns Hopkins Hospital and
+                                has authored over 150 peer-reviewed publications.</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- Right Column: Sidebar -->
+            <aside class="sidebar-wrapper">
+                <div class="course-sidebar">
+                    <div class="preview-container">
+                        <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                            alt="Course Preview" class="preview-img">
+                        <div class="play-overlay">
+                            <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+                            <span class="preview-text">Preview this course</span>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-content">
+                        <div class="price-area">
+                            <span class="current-price">$899</span>
+                            <span class="original-price">$1349</span>
+                            <span class="discount">33% off</span>
+                        </div>
+
+                        <button class="btn btn-primary">Go to Course</button>
+
+                        <div class="sidebar-links">
+                            <span>Have doubts? <a href="#">Talk to Our Team</a></span>
+                        </div>
+
+                        <div class="course-includes">
+                            <div class="includes-title">This course includes:</div>
+                            <ul class="includes-list">
+                                <li><i class="fa-regular fa-circle-play"></i> 12 weeks on-demand video</li>
+                                <li><i class="fa-regular fa-file"></i> 24 articles</li>
+                                <li><i class="fa-solid fa-mobile-screen"></i> Access on mobile and TV</li>
+                                <li><i class="fa-solid fa-medal"></i> Certificate of completion</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo white-logo">
+                    <div class="logo-icon"><i class="fa-solid fa-star-of-life"></i></div>
+                    <div class="logo-text">
+                        <span>Dr Gaurang</span>
+                        <span>Gaikwad</span>
+                    </div>
+                </div>
+                <p>Empowering medical professionals with world-class education and continuous learning opportunities.
+                </p>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Courses</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><i class="fa-regular fa-envelope"></i> academy@drgauranggaikwad.com</li>
+                    <li><i class="fa-solid fa-phone"></i> +91 93243 21819</li>
+                    <li><i class="fa-solid fa-location-dot"></i> 101, Shivana Apartment, Mogul Ln, Mahim, Mumbai -
+                        400016</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container flex-bottom">
+                <p>&copy; 2025 Dr. Gaurang Gaikwad Academy. All rights reserved.</p>
+                <div class="bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

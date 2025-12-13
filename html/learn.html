@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning: Advanced Cardiac Surgery Techniques</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CSS Variables & Reset (Matching Brand) --- */
+        :root {
+            --primary-blue: #2563EB;
+            --primary-light: #EFF6FF;
+            --text-dark: #111827;
+            --text-body: #4B5563;
+            --text-light: #6B7280;
+            --white: #ffffff;
+            --border-color: #E5E7EB;
+            --font-main: 'Inter', sans-serif;
+            --header-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-body);
+            background-color: var(--white);
+            height: 100vh;
+            overflow: hidden;
+            /* Prevent full page scroll, handle inner scroll */
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.2s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- Header --- */
+        .player-header {
+            height: var(--header-height);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            background: white;
+            z-index: 10;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+        }
+
+        .logo-icon {
+            color: #0EA5E9;
+            font-size: 1.5rem;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            color: #0F172A;
+            line-height: 1.1;
+            font-size: 0.95rem;
+        }
+
+        .divider {
+            height: 24px;
+            width: 1px;
+            background: var(--border-color);
+        }
+
+        .course-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .btn-exit {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--text-light);
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-body);
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn-exit:hover {
+            border-color: var(--text-dark);
+            color: var(--text-dark);
+            background: #F9FAFB;
+        }
+
+        /* --- Main Layout --- */
+        .player-container {
+            display: flex;
+            height: calc(100vh - var(--header-height));
+        }
+
+        /* Left Side: Video & Content */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #F9FAFB;
+            /* Slight grey for contrast */
+        }
+
+        .video-wrapper {
+            width: 100%;
+            background: black;
+            position: relative;
+            padding-top: 56.25%;
+            /* 16:9 Aspect Ratio */
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .info-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Tab-like styling for sections below video */
+        .section-block {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        /* Instructor Info */
+        .instructor-row {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .instructor-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .instructor-details h3 {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .instructor-role {
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+            display: block;
+        }
+
+        .instructor-bio {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Notes Section */
+        .resource-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 100%;
+            transition: all 0.2s;
+            background: #F9FAFB;
+        }
+
+        .resource-link:hover {
+            border-color: var(--primary-blue);
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .resource-icon {
+            font-size: 1.5rem;
+            color: #EF4444;
+            /* PDF Red */
+        }
+
+        .resource-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .resource-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .resource-type {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* --- Right Side: Sidebar (Curriculum) --- */
+        .sidebar {
+            width: 400px;
+            background: white;
+            border-left: 1px solid var(--border-color);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: #E5E7EB;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-blue);
+            width: 15%;
+            /* Mock Progress */
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: var(--text-light);
+        }
+
+        /* Accordion / Module List */
+        .module-header {
+            background: #F9FAFB;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .module-header i {
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+
+        .lesson-list {
+            display: block;
+        }
+
+        .lesson-item {
+            display: flex;
+            gap: 12px;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #F3F4F6;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .lesson-item:hover {
+            background-color: #F9FAFB;
+        }
+
+        .lesson-item.active {
+            background-color: var(--primary-light);
+            border-left: 3px solid var(--primary-blue);
+            padding-left: calc(1.5rem - 3px);
+            /* Adjust for border */
+        }
+
+        .lesson-checkbox {
+            margin-top: 4px;
+            color: var(--border-color);
+        }
+
+        .lesson-item.completed .lesson-checkbox {
+            color: var(--primary-blue);
+        }
+
+        .lesson-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .lesson-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-body);
+            line-height: 1.4;
+        }
+
+        .lesson-item.active .lesson-title {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .lesson-meta {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .player-container {
+                flex-direction: column;
+                overflow-y: auto;
+                height: auto;
+            }
+
+            .content-area {
+                overflow: visible;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .header-left .logo,
+            .divider {
+                display: none;
+            }
+
+            /* Simplify header on mobile */
+            .player-header {
+                padding: 0 1rem;
+            }
+
+            .info-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 1. Header with Course Title and Exit Button -->
+    <header class="player-header">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-star-of-life"></i></div>
+                <div class="logo-text">
+                    <span>Dr Gaurang</span>
+                    <span>Gaikwad</span>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <h1 class="course-title">Advanced Cardiac Surgery Techniques</h1>
+        </div>
+
+        <a href="#" class="btn-exit">
+            Exit Course <i class="fa-solid fa-xmark"></i>
+        </a>
+    </header>
+
+    <!-- 2. Main Player Container -->
+    <div class="player-container">
+
+        <!-- LHS: Video & Info -->
+        <div class="content-area">
+
+            <!-- Video Iframe -->
+            <div class="video-wrapper">
+                <!-- Placeholder for Vimeo Embed -->
+                <iframe src="https://player.vimeo.com/video/76979871?h=8272103f6e&title=0&byline=0&portrait=0"
+                    width="640" height="360" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <!-- Content Below Video -->
+            <div class="info-container">
+
+                <!-- Notes Section -->
+                <div class="section-block">
+                    <h2 class="section-title">Course Resources</h2>
+                    <a href="#" class="resource-link">
+                        <i class="fa-solid fa-file-pdf resource-icon"></i>
+                        <div class="resource-info">
+                            <span class="resource-name">Lecture Notes: Fundamentals of Cardiac Surgery</span>
+                            <span class="resource-type">PDF Document (2.4 MB)</span>
+                        </div>
+                        <i class="fa-solid fa-download" style="margin-left: auto; color: #9CA3AF;"></i>
+                    </a>
+                </div>
+
+                <!-- Instructor Info -->
+                <div class="section-block">
+                    <h2 class="section-title">Your Instructor</h2>
+                    <div class="instructor-row">
+                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
+                            alt="Dr Sarah" class="instructor-img">
+                        <div class="instructor-details">
+                            <h3>Dr. Sarah Johnson</h3>
+                            <span class="instructor-role">Chief Cardiothoracic Surgeon</span>
+                            <p class="instructor-bio">
+                                Dr. Sarah Johnson is a world-renowned cardiothoracic surgeon with over 20 years of
+                                experience. She pioneered minimally invasive techniques at Johns Hopkins and is
+                                passionate about training the next generation of surgeons.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- RHS: Curriculum Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Course Content</div>
+                <div class="progress-text">15% Completed</div>
+                <div class="progress-bar-container">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Module 1 -->
+            <div class="module-header">
+                <span>Section 1: Fundamentals</span>
+                <i class="fa-solid fa-chevron-up"></i>
+            </div>
+            <div class="lesson-list">
+                <!-- Active Lesson -->
+                <div class="lesson-item active">
+                    <div class="lesson-checkbox"><i class="fa-regular fa-circle-play"></i></div>
+                    <div class="lesson-content">
+                        <span class="lesson-title">Welcome & Course Overview</span>
+                        <div class="lesson-meta"><i class="fa-solid fa-video"></i> 5 min</div>
+                    </div>
+                </div>
+
+                <!-- Completed Lesson -->
+                <div class="lesson-item completed">
+                    <div class="lesson-checkbox"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="lesson-content">
+                        <span class="lesson-title">History of Cardiac Surgery</span>
+                        <div class="lesson-meta"><i class="fa-solid fa-video"></i> 12 min</div>
+                    </div>
+                </div>
+
+                <!-- Standard Lesson -->
+                <div class="lesson-item">
+                    <div class="lesson-checkbox"><i class="fa-regular fa-circle"></i></div>
+                    <div class="lesson-content">
+                        <span class="lesson-title">Patient Selection Criteria</span>
+                        <div class="lesson-meta"><i class="fa-solid fa-video"></i> 18 min</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="module-header">
+                <span>Section 2: Minimally Invasive</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <!-- Collapsed list would go here -->
+            <div class="lesson-list">
+                <div class="lesson-item">
+                    <div class="lesson-checkbox"><i class="fa-regular fa-lock"></i></div>
+                    <div class="lesson-content">
+                        <span class="lesson-title">Introduction to Robotic Surgery</span>
+                        <div class="lesson-meta"><i class="fa-solid fa-video"></i> 22 min</div>
+                    </div>
+                </div>
+                <div class="lesson-item">
+                    <div class="lesson-checkbox"><i class="fa-regular fa-lock"></i></div>
+                    <div class="lesson-content">
+                        <span class="lesson-title">Keyhole Techniques</span>
+                        <div class="lesson-meta"><i class="fa-solid fa-video"></i> 15 min</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

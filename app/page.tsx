@@ -1,23 +1,21 @@
-import { Navbar } from "@/components/layout/Navbar"
-import { Footer } from "@/components/layout/Footer"
-import { HeroSection } from "@/components/home/HeroSection"
-import { TrustSection } from "@/components/home/TrustSection"
-import { FeaturesSection } from "@/components/home/FeaturesSection"
-import { ExploreCoursesSection } from "@/components/home/ExploreCoursesSection"
-import { TestimonialsSection } from "@/components/home/TestimonialsSection"
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
+import WhyTrustUs from "@/components/WhyTrustUs";
+import Features from "@/components/Features";
+import CourseFilters from "@/components/CourseFilters";
+import Testimonials from "@/components/Testimonials";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col font-sans">
+    <main className="min-h-screen font-sans">
       <Navbar />
-      <main className="flex-1">
-        <HeroSection />
-        <TrustSection />
-        <FeaturesSection />
-        <ExploreCoursesSection />
-        <TestimonialsSection />
-      </main>
+      <Hero />
+      <WhyTrustUs />
+      <Features />
+      <CourseFilters />
+      <Testimonials />
       <Footer />
-    </div>
+    </main>
   );
 }

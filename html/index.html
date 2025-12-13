@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Gaurang Gaikwad - Medical Academy</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <!-- Using a similar medical icon -->
+                <div class="logo-icon"><i class="fa-solid fa-star-of-life"></i></div>
+                <div class="logo-text">
+                    <span>Dr Gaurang</span>
+                    <span>Gaikwad</span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Courses</a></li>
+                <li><a href="#">Forums</a></li>
+                <li><a href="#" class="admin-link">Admin</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="lang-selector">
+                    <i class="fa-solid fa-globe"></i> EN
+                </div>
+                <button class="btn btn-primary nav-btn">Get Started</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1>Learn. Heal. Lead.</h1>
+                <p>Advance your medical expertise with world-class courses designed for doctors, by doctors. Learn at your pace, earn certifications, and transform patient care.</p>
+                <div class="hero-btns">
+                    <button class="btn btn-primary">Explore Courses <i class="fa-solid fa-arrow-right"></i></button>
+                    <button class="btn btn-outline"><i class="fa-solid fa-play"></i> Watch Demo</button>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <h3>500+</h3>
+                        <span>Expert Courses</span>
+                    </div>
+                    <div class="stat-item">
+                        <h3>10K+</h3>
+                        <span>Active Learners</span>
+                    </div>
+                    <div class="stat-item">
+                        <h3>98%</h3>
+                        <span>Satisfaction</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-image-wrapper">
+                <!-- The big blue circular background aura -->
+                <div class="gradient-aura"></div>
+                <div class="image-mask">
+                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Doctor">
+                </div>
+                
+                <!-- Floating Badge Top Right -->
+                <div class="badge badge-top">
+                    <div class="badge-icon"><i class="fa-solid fa-star"></i></div>
+                    <div class="badge-info">
+                        <strong>98%</strong>
+                        <span>Satisfaction Rate</span>
+                    </div>
+                </div>
+                
+                <!-- Floating Badge Bottom Left -->
+                <div class="badge badge-bottom">
+                    <div class="badge-text-group">
+                        <strong>50k+</strong>
+                        <span>Online Members</span>
+                    </div>
+                    <div class="badge-avatars">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+                        <img src="https://randomuser.me/api/portraits/men/85.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Why Trust Us Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Trust Us?</h2>
+                <p>We're committed to delivering the highest quality medical education that empowers doctors to excel in their practice.</p>
+            </div>
+
+            <div class="grid-4">
+                <div class="card icon-card">
+                    <div class="icon-box"><i class="fa-solid fa-ribbon"></i></div>
+                    <h3>Accredited Instructors</h3>
+                    <p>Learn from board-certified specialists and leading medical experts with decades of clinical experience.</p>
+                </div>
+                <div class="card icon-card">
+                    <div class="icon-box"><i class="fa-solid fa-user-group"></i></div>
+                    <h3>Trusted by Doctors</h3>
+                    <p>Join 50,000+ medical professionals worldwide who advance their careers with our platform.</p>
+                </div>
+                <div class="card icon-card">
+                    <div class="icon-box"><i class="fa-solid fa-globe"></i></div>
+                    <h3>Global Access</h3>
+                    <p>Access courses anywhere, anytime. Study from home, clinic, or on-the-go with our mobile-friendly platform.</p>
+                </div>
+                <div class="card icon-card">
+                    <div class="icon-box"><i class="fa-regular fa-clock"></i></div>
+                    <h3>Flexible Learning</h3>
+                    <p>Self-paced courses that fit your schedule. Learn during your downtime without disrupting patient care.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Features of Our Courses</h2>
+                <p>Comprehensive learning experiences designed to enhance your medical expertise and clinical decision-making.</p>
+            </div>
+
+            <div class="grid-4">
+                <div class="card feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-book-open"></i></div>
+                    <h3>Interactive Lessons</h3>
+                    <p>Engage with multimedia content, 3D medical visualizations, and interactive case simulations.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="icon-box"><i class="fa-regular fa-file-lines"></i></div>
+                    <h3>Real Case Studies</h3>
+                    <p>Apply knowledge to real-world clinical scenarios and learn from actual patient cases.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="icon-box"><i class="fa-regular fa-circle-check"></i></div>
+                    <h3>Comprehensive Assessments</h3>
+                    <p>Test your knowledge with quizzes, practical exams, and peer-reviewed assignments.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-medal"></i></div>
+                    <h3>Accredited Certificates</h3>
+                    <p>Earn CME credits and recognized certificates to advance your professional credentials.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Explore Courses -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Explore Courses</h2>
+                <p>Find the perfect course tailored to your specialty, level, and language preference.</p>
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active"><i class="fa-regular fa-clock"></i> By Level</button>
+                <button class="filter-btn"><i class="fa-solid fa-book-open"></i> By Category</button>
+                <button class="filter-btn"><i class="fa-solid fa-globe"></i> By Language</button>
+            </div>
+            
+            <div class="sub-filters">
+                <button class="sub-pill active">Advanced (5)</button>
+                <button class="sub-pill">Beginner (3)</button>
+                <button class="sub-pill">Intermediate (4)</button>
+            </div>
+
+            <div class="grid-4 course-grid">
+                <!-- Course 1 -->
+                <div class="card course-card">
+                    <div class="course-img">
+                        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Surgery">
+                        <span class="badge-level">Advanced</span>
+                        <span class="badge-rating"><i class="fa-solid fa-star"></i> 4.9</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Advanced Cardiac Surgery Techniques</h3>
+                        <p class="author">Dr. Sarah Johnson</p>
+                        <div class="course-meta">
+                            <span><i class="fa-regular fa-clock"></i> 12 weeks</span>
+                            <span>1,240 students</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 2 -->
+                <div class="card course-card">
+                    <div class="course-img">
+                        <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Neuro">
+                        <span class="badge-level">Advanced</span>
+                        <span class="badge-rating"><i class="fa-solid fa-star"></i> 4.9</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Neurosurgical Innovations</h3>
+                        <p class="author">Dr. James Williams</p>
+                        <div class="course-meta">
+                            <span><i class="fa-regular fa-clock"></i> 14 weeks</span>
+                            <span>756 students</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 3 -->
+                <div class="card course-card">
+                    <div class="course-img">
+                        <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Cardio">
+                        <span class="badge-level">Advanced</span>
+                        <span class="badge-rating"><i class="fa-solid fa-star"></i> 4.9</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Interventional Cardiology</h3>
+                        <p class="author">Dr. David Lee</p>
+                        <div class="course-meta">
+                            <span><i class="fa-regular fa-clock"></i> 12 weeks</span>
+                            <span>1,580 students</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 4 -->
+                <div class="card course-card">
+                    <div class="course-img">
+                        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Ortho">
+                        <span class="badge-level">Advanced</span>
+                        <span class="badge-rating"><i class="fa-solid fa-star"></i> 4.8</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Orthopedic Surgery Essentials</h3>
+                        <p class="author">Dr. Robert Martinez</p>
+                        <div class="course-meta">
+                            <span><i class="fa-regular fa-clock"></i> 11 weeks</span>
+                            <span>1,340 students</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="center-btn">
+                <button class="btn btn-outline see-all">See All Courses <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trusted By / Reviews -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Trusted by Medical Professionals</h2>
+                <p>Join thousands of doctors worldwide who are advancing their careers and improving patient outcomes with our courses.</p>
+            </div>
+
+            <div class="grid-3 testimonial-grid">
+                <!-- Review 1 -->
+                <div class="card review-card">
+                    <div class="stars">★★★★★</div>
+                    <i class="fa-solid fa-quote-left quote-icon"></i>
+                    <p>"The cardiology courses here transformed my practice. The case studies were incredibly practical and helped me implement new techniques immediately."</p>
+                    <div class="reviewer">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User">
+                        <div>
+                            <h4>Dr. Priya Sharma</h4>
+                            <span>Cardiologist<br>Mumbai, India</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="card review-card">
+                    <div class="stars">★★★★★</div>
+                    <i class="fa-solid fa-quote-left quote-icon"></i>
+                    <p>"Flexible learning that fits my hectic schedule. The CME credits are a huge bonus, and the instructors are world-class professionals."</p>
+                    <div class="reviewer">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
+                        <div>
+                            <h4>Dr. James Martinez</h4>
+                            <span>Emergency Medicine<br>Miami, USA</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="card review-card">
+                    <div class="stars">★★★★★</div>
+                    <i class="fa-solid fa-quote-left quote-icon"></i>
+                    <p>"Outstanding quality and depth of content. The pediatric courses covered everything from basics to advanced subspecialties. Highly recommend!"</p>
+                    <div class="reviewer">
+                        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="User">
+                        <div>
+                            <h4>Dr. Sarah Al-Hassan</h4>
+                            <span>Pediatrician<br>Dubai, UAE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo white-logo">
+                    <div class="logo-icon"><i class="fa-solid fa-star-of-life"></i></div>
+                    <div class="logo-text">
+                        <span>Dr Gaurang</span>
+                        <span>Gaikwad</span>
+                    </div>
+                </div>
+                <p>Empowering medical professionals with world-class education and continuous learning opportunities.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Courses</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><i class="fa-regular fa-envelope"></i> academy@drgauranggaikwad.com</li>
+                    <li><i class="fa-solid fa-phone"></i> +91 93243 21819</li>
+                    <li><i class="fa-solid fa-location-dot"></i> 101, Shivana Apartment, Mogul Ln, Mahim, Mumbai - 400016</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container flex-bottom">
+                <p>&copy; 2025 Dr. Gaurang Gaikwad Academy. All rights reserved.</p>
+                <div class="bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
