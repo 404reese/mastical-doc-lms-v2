@@ -3,7 +3,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CourseBrowser from "@/components/courses/CourseBrowser";
 import Course from "@/lib/models/Course";
+import Instructor from "@/lib/models/Instructor";
 import connectToDatabase from "@/lib/db";
+
+// Ensure models are registered
+const _models = { Course, Instructor };
 
 export const metadata: Metadata = {
     title: "Courses | Dr Gaurang Gaikwad",

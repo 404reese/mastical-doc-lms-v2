@@ -16,7 +16,13 @@ async function getCourse(id: string) {
             .populate("instructor")
             .populate({
                 path: "modules",
-                populate: { path: "videos", model: "Video" }
+                options: { sort: { position: 1 } },
+                populate: {
+                    path: "videos",
+                    model: "Video",
+                    options: { sort: { position: 1 } },
+                    populate: { path: "instructor", model: "Instructor" },
+                },
             })
             .lean();
         if (!course) return null;

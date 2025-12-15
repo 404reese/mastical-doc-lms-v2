@@ -2,7 +2,15 @@ import Image from "next/image";
 
 export default function Hero() {
     return (
-        <header className="relative bg-gradient-to-b from-[#E0F2FE] to-[#F0F9FF] pt-16 pb-24 overflow-hidden">
+        <header
+            className="relative bg-gradient-to-b from-[#E0F2FE] to-transparent pt-16 pb-24 overflow-hidden h-screen flex items-center"
+            style={{
+                WebkitMaskImage:
+                    "linear-gradient(to bottom, rgba(0,0,0,1) calc(100% - 10px), rgba(0,0,0,0) 100%)",
+                maskImage:
+                    "linear-gradient(to bottom, rgba(0,0,0,1) calc(100% - 10px), rgba(0,0,0,0) 100%)",
+            }}
+        >
             <div className="max-w-[1240px] mx-auto px-6 flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-0">
 
                 {/* Hero Content */}
@@ -16,9 +24,9 @@ export default function Hero() {
                         transform patient care.
                     </p>
                     <div className="flex gap-4 mb-16">
-                        <button className="bg-[#2563EB] text-white px-7 py-3.5 rounded-md font-semibold text-base hover:bg-[#1D4ED8] transition-all flex items-center gap-2">
+                        <a href="/courses" className="bg-[#2563EB] text-white px-7 py-3.5 rounded-md font-semibold text-base hover:bg-[#1D4ED8] transition-all flex items-center gap-2">
                             Explore Courses <i className="fa-solid fa-arrow-right"></i>
-                        </button>
+                        </a>
                         <button className="bg-white border border-[#2563EB] text-[#2563EB] px-7 py-3.5 rounded-md font-semibold text-base hover:bg-[#DBEAFE] transition-all flex items-center gap-2">
                             <i className="fa-solid fa-play"></i> Watch Demo
                         </button>

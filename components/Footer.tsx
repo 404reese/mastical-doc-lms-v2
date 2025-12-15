@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+const year = new Date().getFullYear();
 export default function Footer() {
     return (
         <footer className="bg-[#172554] text-[#94a3b8] pt-20">
@@ -7,13 +8,7 @@ export default function Footer() {
                 {/* Brand */}
                 <div className="flex flex-col">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="text-[2rem] text-white">
-                            <i className="fa-solid fa-star-of-life"></i>
-                        </div>
-                        <div className="flex flex-col leading-[1.1] font-bold text-[1.1rem] text-white">
-                            <span>Dr Gaurang</span>
-                            <span>Gaikwad</span>
-                        </div>
+                        <img src="/main-logo-white.png" alt="Dr. Gaurang Gaikwad" className="h-16" />
                     </div>
                     <p className="max-w-[300px] mb-6 leading-relaxed">
                         Empowering medical professionals with world-class education and
@@ -140,7 +135,13 @@ export default function Footer() {
             {/* Footer Bottom */}
             <div className="bg-[#0B1120] py-6 text-sm">
                 <div className="max-w-[1240px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
-                    <p>&copy; 2025 Dr. Gaurang Gaikwad Academy. All rights reserved.</p>
+                    <p>&copy; {year} Dr. Gaurang Gaikwad Academy. All rights reserved.</p>
+                    <div className="flex gap-2 items-center justify-center text-xs">
+                        <span>Developed by</span>
+                        <a href="https://mastical.com" target="_blank" rel="dr gaurang gaikwad">
+                            <img src="/mastical-logo.png" alt="Mastical" className="h-5" />
+                        </a>
+                    </div>
                     <div className="flex gap-8 justify-center">
                         <Link href="#" className="hover:text-white transition-colors">
                             Privacy Policy

@@ -92,8 +92,9 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
                         <CourseSidebar
                             courseId={courseId}
                             price={course.price || 49}
-                            originalPrice={course.originalPrice || 99}
-                            previewImage={course.thumbnail}
+                            originalPrice={originalPrice}
+                            previewImage={course.previewImageLink}
+                            previewVideoLink={course.previewVideoLink}
                         />
                     </aside>
                 </div>

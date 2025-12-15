@@ -31,7 +31,13 @@ import { Plus, PlayCircle } from 'lucide-react';
 interface Video {
     _id: string;
     title: string;
+    description?: string;
+    link?: string;
     duration: number;
+    instructor?: string;
+    notes?: string;
+    notesUrl?: string;
+    position?: number;
 }
 
 interface Module {
@@ -53,9 +59,22 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
     const [instructors, setInstructors] = useState<Instructor[]>([]);
     const [loading, setLoading] = useState(true);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+    const [updating, setUpdating] = useState(false);
+
+    const [editingVideo, setEditingVideo] = useState<Video | null>(null);
 
     const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        link: '',
+        duration: '',
+        instructor: '',
+        notes: '',
+        notesUrl: '',
+    });
+    const [editFormData, setEditFormData] = useState({
         title: '',
         description: '',
         link: '',
@@ -109,6 +128,14 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
 
     const handleSelectChange = (val: string) => {
         setFormData({ ...formData, instructor: val });
+    };
+
+    const handleEditSelectChange = (val: string) => {
+        setEditFormData({ ...editFormData, instructor: val });
+    };
+
+    const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
     };
 
 
@@ -182,6 +209,60 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
         }
     }
 
+    const openEditVideo = (video: Video) => {
+        setEditingVideo(video);
+        setEditFormData({
+            title: video.title ?? '',
+            description: video.description ?? '',
+            link: video.link ?? '',
+            duration: video.duration != null ? String(video.duration) : '',
+            instructor: video.instructor ?? '',
+            notes: video.notes ?? '',
+            notesUrl: video.notesUrl ?? '',
+        });
+        setIsEditDialogOpen(true);
+    };
+
+    const handleUpdateVideo = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editingVideo) return;
+        setUpdating(true);
+        try {
+            const res = await fetch(`/api/admin/videos/${editingVideo._id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: editFormData.title,
+                    description: editFormData.description || undefined,
+                    link: editFormData.link,
+                    duration:
+                        editFormData.duration === ''
+                            ? undefined
+                            : Number(editFormData.duration),
+                    instructor: editFormData.instructor || undefined,
+                    notes: editFormData.notes || undefined,
+                    notesUrl: editFormData.notesUrl || undefined,
+                }),
+            });
+
+            if (!res.ok) throw new Error('Failed to update video');
+
+            const courseRes = await fetch(`/api/admin/courses/${params.courseId}`);
+            const course = await courseRes.json();
+            const mod = course.modules.find((m: any) => m._id === params.moduleId);
+            setModuleData(mod);
+
+            setIsEditDialogOpen(false);
+            setEditingVideo(null);
+            router.refresh();
+        } catch (err) {
+            console.error(err);
+            alert('Error updating video');
+        } finally {
+            setUpdating(false);
+        }
+    };
+
 
     if (loading) return <div>Loading...</div>;
     if (!moduleData) return <div>Module not found</div>;
@@ -193,6 +274,59 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
                     <h1 className="text-2xl font-bold">Module: {moduleData.title}</h1>
                     <p className="text-muted-foreground">Manage videos and content for this module.</p>
                 </div>
+                <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+                    <DialogContent className="max-w-lg">
+                        <DialogHeader>
+                            <DialogTitle>Edit Video</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={handleUpdateVideo} className="space-y-4">
+                            <div className="space-y-2">
+                                <Label>Title</Label>
+                                <Input name="title" value={editFormData.title} onChange={handleEditChange} required />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Video Link (URL)</Label>
+                                <Input name="link" value={editFormData.link} onChange={handleEditChange} required placeholder="https://..." />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Duration (min)</Label>
+                                    <Input name="duration" type="number" value={editFormData.duration} onChange={handleEditChange} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Instructor</Label>
+                                    <Select value={editFormData.instructor} onValueChange={handleEditSelectChange}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select Instructor" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {instructors.map((inst) => (
+                                                <SelectItem key={inst._id} value={inst._id}>
+                                                    {inst.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Description</Label>
+                                <Input name="description" value={editFormData.description} onChange={handleEditChange} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Notes URL</Label>
+                                <Input name="notesUrl" value={editFormData.notesUrl} onChange={handleEditChange} placeholder="https://..." />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Additional Notes (Text)</Label>
+                                <Input name="notes" value={editFormData.notes} onChange={handleEditChange} />
+                            </div>
+                            <Button type="submit" className="w-full" disabled={updating}>
+                                {updating ? 'Saving...' : 'Save Changes'}
+                            </Button>
+                        </form>
+                    </DialogContent>
+                </Dialog>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                         <Button>
@@ -289,7 +423,13 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
                                     <h3 className="font-semibold">{video.title}</h3>
                                     <p className="text-sm text-muted-foreground">{video.duration} mins</p>
                                 </div>
-                                <Button variant="ghost" size="sm">Edit</Button>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => openEditVideo(video)}
+                                >
+                                    Edit
+                                </Button>
                             </CardContent>
                         </Card>
                     ))

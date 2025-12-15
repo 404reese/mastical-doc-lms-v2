@@ -35,6 +35,8 @@ export default function NewCoursePage() {
         language: 'English',
         shortDescription: '',
         duration: '', // will parse to number
+        previewVideoLink: '',
+        previewImageLink: '',
     });
 
     useEffect(() => {
@@ -205,6 +207,32 @@ export default function NewCoursePage() {
                                         <SelectItem value="Advanced">Advanced</SelectItem>
                                     </SelectContent>
                                 </Select>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            {/* Preview Video */}
+                            <div className="space-y-2">
+                                <Label htmlFor="previewVideoLink">Preview Video Link</Label>
+                                <Input
+                                    id="previewVideoLink"
+                                    name="previewVideoLink"
+                                    placeholder="https://vimeo.com/..."
+                                    value={formData.previewVideoLink}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            {/* Preview Image */}
+                            <div className="space-y-2">
+                                <Label htmlFor="previewImageLink">Preview Image Link</Label>
+                                <Input
+                                    id="previewImageLink"
+                                    name="previewImageLink"
+                                    placeholder="https://..."
+                                    value={formData.previewImageLink}
+                                    onChange={handleChange}
+                                />
                             </div>
                         </div>
 

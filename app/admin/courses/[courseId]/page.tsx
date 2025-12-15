@@ -20,6 +20,13 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Plus, Video as VideoIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
@@ -33,15 +40,47 @@ interface Course {
     _id: string;
     title: string;
     description: string;
+    instructor: string | { _id: string; name: string };
     price: number;
     level: string;
+    category?: string;
+    language?: string;
+    shortDescription?: string;
+    duration?: number;
+    previewVideoLink?: string;
+    previewImageLink?: string;
+    requirements?: string[];
     modules: Module[];
+}
+
+interface Instructor {
+    _id: string;
+    name: string;
 }
 
 export default function CourseDetailPage(props: { params: Promise<{ courseId: string }> }) {
     const params = use(props.params); // Unwrap params
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
+
+    const [instructors, setInstructors] = useState<Instructor[]>([]);
+    const [isEditCourseOpen, setIsEditCourseOpen] = useState(false);
+    const [savingCourse, setSavingCourse] = useState(false);
+    const [courseForm, setCourseForm] = useState({
+        title: '',
+        shortDescription: '',
+        description: '',
+        instructor: '',
+        category: '',
+        language: '',
+        level: '',
+        price: '',
+        duration: '',
+        previewVideoLink: '',
+        previewImageLink: '',
+        requirementsText: '',
+    });
+
     const [moduleTitle, setModuleTitle] = useState('');
     const [creatingModule, setCreatingModule] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -62,6 +101,104 @@ export default function CourseDetailPage(props: { params: Promise<{ courseId: st
         }
         fetchCourse();
     }, [params.courseId]);
+
+    useEffect(() => {
+        async function fetchInstructors() {
+            try {
+                const res = await fetch('/api/admin/instructors');
+                if (!res.ok) return;
+                const data = await res.json();
+                setInstructors(data);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchInstructors();
+    }, []);
+
+    useEffect(() => {
+        if (!course) return;
+        const instructorId =
+            typeof course.instructor === 'string'
+                ? course.instructor
+                : course.instructor?._id;
+
+        setCourseForm({
+            title: course.title ?? '',
+            shortDescription: course.shortDescription ?? '',
+            description: course.description ?? '',
+            instructor: instructorId ?? '',
+            category: course.category ?? '',
+            language: course.language ?? '',
+            level: course.level ?? '',
+            price: String(course.price ?? ''),
+            duration: course.duration != null ? String(course.duration) : '',
+            previewVideoLink: course.previewVideoLink ?? '',
+            previewImageLink: course.previewImageLink ?? '',
+            requirementsText: (course.requirements ?? []).join(', '),
+        });
+    }, [course]);
+
+    const handleCourseFieldChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        setCourseForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+    const handleCourseSelectChange = (name: string, value: string) => {
+        setCourseForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleUpdateCourse = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSavingCourse(true);
+        try {
+            const requirements = courseForm.requirementsText
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean);
+
+            const res = await fetch(`/api/admin/courses/${params.courseId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: courseForm.title,
+                    shortDescription: courseForm.shortDescription || undefined,
+                    description: courseForm.description,
+                    instructor: courseForm.instructor,
+                    category: courseForm.category || undefined,
+                    language: courseForm.language || undefined,
+                    level: courseForm.level || undefined,
+                    price:
+                        courseForm.price === '' ? undefined : Number(courseForm.price),
+                    duration:
+                        courseForm.duration === ''
+                            ? undefined
+                            : Number(courseForm.duration),
+                    previewVideoLink: courseForm.previewVideoLink || undefined,
+                    previewImageLink: courseForm.previewImageLink || undefined,
+                    requirements: requirements.length ? requirements : undefined,
+                }),
+            });
+
+            if (!res.ok) throw new Error('Failed to update course');
+
+            // Re-fetch full course so modules/videos stay populated
+            const refreshed = await fetch(`/api/admin/courses/${params.courseId}`);
+            if (refreshed.ok) {
+                const data = await refreshed.json();
+                setCourse(data);
+            }
+
+            setIsEditCourseOpen(false);
+            router.refresh();
+        } catch (error) {
+            console.error(error);
+            alert('Failed to update course');
+        } finally {
+            setSavingCourse(false);
+        }
+    };
 
     const handleCreateModule = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -110,7 +247,172 @@ export default function CourseDetailPage(props: { params: Promise<{ courseId: st
                         <Badge variant="outline">${course.price}</Badge>
                     </div>
                 </div>
-                <Button variant="outline">Edit Course</Button>
+                <Dialog open={isEditCourseOpen} onOpenChange={setIsEditCourseOpen}>
+                    <DialogTrigger asChild>
+                        <Button variant="outline">Edit Course</Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl">
+                        <DialogHeader>
+                            <DialogTitle>Edit Course</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={handleUpdateCourse} className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="title">Course Title</Label>
+                                <Input
+                                    id="title"
+                                    name="title"
+                                    value={courseForm.title}
+                                    onChange={handleCourseFieldChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="shortDescription">Short Description</Label>
+                                <Input
+                                    id="shortDescription"
+                                    name="shortDescription"
+                                    value={courseForm.shortDescription}
+                                    onChange={handleCourseFieldChange}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="description">Full Description</Label>
+                                <textarea
+                                    id="description"
+                                    name="description"
+                                    className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    value={courseForm.description}
+                                    onChange={handleCourseFieldChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Instructor</Label>
+                                    <Select
+                                        value={courseForm.instructor}
+                                        onValueChange={(value) =>
+                                            handleCourseSelectChange('instructor', value)
+                                        }
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select Instructor" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {instructors.map((inst) => (
+                                                <SelectItem key={inst._id} value={inst._id}>
+                                                    {inst.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="category">Category</Label>
+                                    <Input
+                                        id="category"
+                                        name="category"
+                                        value={courseForm.category}
+                                        onChange={handleCourseFieldChange}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="price">Price ($)</Label>
+                                    <Input
+                                        id="price"
+                                        name="price"
+                                        type="number"
+                                        min="0"
+                                        value={courseForm.price}
+                                        onChange={handleCourseFieldChange}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="duration">Duration (min)</Label>
+                                    <Input
+                                        id="duration"
+                                        name="duration"
+                                        type="number"
+                                        min="0"
+                                        value={courseForm.duration}
+                                        onChange={handleCourseFieldChange}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Level</Label>
+                                    <Select
+                                        value={courseForm.level}
+                                        onValueChange={(value) =>
+                                            handleCourseSelectChange('level', value)
+                                        }
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select Level" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Beginner">Beginner</SelectItem>
+                                            <SelectItem value="Intermediate">Intermediate</SelectItem>
+                                            <SelectItem value="Advanced">Advanced</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="language">Language</Label>
+                                    <Input
+                                        id="language"
+                                        name="language"
+                                        value={courseForm.language}
+                                        onChange={handleCourseFieldChange}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="requirementsText">Requirements (comma-separated)</Label>
+                                    <Input
+                                        id="requirementsText"
+                                        name="requirementsText"
+                                        value={courseForm.requirementsText}
+                                        onChange={handleCourseFieldChange}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="previewVideoLink">Preview Video Link</Label>
+                                    <Input
+                                        id="previewVideoLink"
+                                        name="previewVideoLink"
+                                        value={courseForm.previewVideoLink}
+                                        onChange={handleCourseFieldChange}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="previewImageLink">Preview Image Link</Label>
+                                    <Input
+                                        id="previewImageLink"
+                                        name="previewImageLink"
+                                        value={courseForm.previewImageLink}
+                                        onChange={handleCourseFieldChange}
+                                    />
+                                </div>
+                            </div>
+
+                            <Button type="submit" className="w-full" disabled={savingCourse}>
+                                {savingCourse ? 'Saving...' : 'Save Changes'}
+                            </Button>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             <div className="flex justify-between items-center mt-8">

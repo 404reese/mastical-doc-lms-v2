@@ -1,25 +1,32 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { cn } from "@/lib/utils";
 
 export default function Navbar() {
+    const pathname = usePathname();
+    const isHome = pathname === "/";
+
     return (
-        <nav className="py-5 bg-transparent">
+        <nav
+            className={cn(
+                "py-5 bg-transparent",
+                isHome && "absolute top-0 left-0 right-0 z-50 w-full"
+            )}
+        >
             <div className="max-w-[1240px] mx-auto px-6 flex justify-between items-center">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-3 group">
-                    <div className="text-[2rem] text-[#0EA5E9]">
-                        <i className="fa-solid fa-star-of-life"></i>
-                    </div>
-                    <div className="flex flex-col leading-[1.1] font-bold text-[1.1rem] text-[#0F172A]">
-                        <span>Dr Gaurang</span>
-                        <span>Gaikwad</span>
-                    </div>
+                    <img src="/main-logo.webp" alt="Mastical Doc LMS" className="h-12" />
                 </Link>
 
                 {/* Nav Links */}
                 <ul className="hidden md:flex gap-10">
                     <li>
                         <Link
-                            href="#"
+                            href="/"
                             className="text-[#334155] font-medium text-[1rem] hover:text-[#2563EB] transition-colors"
                         >
                             Home
@@ -35,7 +42,7 @@ export default function Navbar() {
                     </li>
                     <li>
                         <Link
-                            href="#"
+                            href="/forums"
                             className="text-[#334155] font-medium text-[1rem] hover:text-[#2563EB] transition-colors"
                         >
                             Forums
@@ -43,7 +50,7 @@ export default function Navbar() {
                     </li>
                     <li>
                         <Link
-                            href="#"
+                            href="/admin/dashboard"
                             className="text-[#EF4444] font-semibold text-[1rem] hover:text-[#dc2626] transition-colors"
                         >
                             Admin

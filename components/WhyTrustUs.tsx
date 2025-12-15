@@ -1,6 +1,8 @@
 export default function WhyTrustUs() {
     return (
-        <section className="py-20 bg-[#F8FAFC]">
+        <section className="relative py-20 bg-gradient-to-b from-transparent to-[#F8FAFC]">
+            {/* Top fade from previous section */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-4 " />
             <div className="max-w-[1240px] mx-auto px-6">
                 <div className="text-center max-w-[700px] mx-auto mb-16">
                     <h2 className="text-[2.5rem] font-bold text-[#1e3a8a] mb-4">

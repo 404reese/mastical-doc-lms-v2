@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        return new Promise((resolve) => {
+        return new Promise<Response>((resolve) => {
             blobStream.on("error", (err) => {
                 console.error("Upload error:", err);
                 resolve(NextResponse.json({ error: "Upload failed" }, { status: 500 }));

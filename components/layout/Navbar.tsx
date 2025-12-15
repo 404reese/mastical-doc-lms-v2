@@ -1,21 +1,28 @@
+"use client"
+
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Globe, Menu, X } from "lucide-react"
+import { Globe, Menu } from "lucide-react"
+
+import { cn } from "@/lib/utils"
 
 export function Navbar() {
+    const pathname = usePathname()
+    const isHome = pathname === "/"
+
     return (
-        <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <nav
+            className={cn(
+                "sticky top-0 z-50 w-full border-b",
+                isHome ? "bg-transparent border-transparent" : "bg-background"
+            )}
+        >
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
                 {/* Logo */}
                 <div className="flex items-center gap-2">
                     <Link href="/" className="flex items-center gap-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white font-bold">
-                            DG
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-sm font-bold leading-none text-blue-700">Dr Gaurang</span>
-                            <span className="text-sm font-bold leading-none text-blue-700">Gaikwad</span>
-                        </div>
+                        <img src="/main-logo.webp" alt="Mastical Doc LMS" className="h-12" />
                     </Link>
                 </div>
 
@@ -30,7 +37,7 @@ export function Navbar() {
                     <Link href="/forum" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
                         Forum
                     </Link>
-                    <Link href="/admin" className="text-sm font-medium text-orange-500 transition-colors hover:text-orange-600">
+                    <Link href="/admin/dashboard" className="text-sm font-medium text-orange-500 transition-colors hover:text-orange-600">
                         Admin
                     </Link>
                 </div>

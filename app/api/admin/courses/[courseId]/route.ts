@@ -4,8 +4,36 @@ import connectToDatabase from '@/lib/db';
 import Course from '@/lib/models/Course';
 import Module from '@/lib/models/Module';
 import Video from '@/lib/models/Video';
+import Instructor from '@/lib/models/Instructor';
 
 type Params = Promise<{ courseId: string }>;
+
+const COURSE_UPDATABLE_FIELDS = [
+    'title',
+    'description',
+    'instructor',
+    'price',
+    'requirements',
+    'language',
+    'shortDescription',
+    'duration',
+    'level',
+    'category',
+    'previewVideoLink',
+    'previewImageLink',
+] as const;
+
+type CourseUpdatableField = (typeof COURSE_UPDATABLE_FIELDS)[number];
+
+function pickCourseUpdates(body: Record<string, unknown>) {
+    const updates: Record<CourseUpdatableField, unknown> = {} as any;
+    for (const key of COURSE_UPDATABLE_FIELDS) {
+        if (Object.prototype.hasOwnProperty.call(body, key)) {
+            (updates as any)[key] = (body as any)[key];
+        }
+    }
+    return updates;
+}
 
 export async function GET(req: Request, { params }: { params: Params }) {
     try {
@@ -39,7 +67,16 @@ export async function PUT(req: Request, { params }: { params: Params }) {
         const { courseId } = await params;
         const body = await req.json();
 
-        const updatedCourse = await Course.findByIdAndUpdate(courseId, body, {
+        const updates = pickCourseUpdates(body ?? {});
+
+        if (updates.instructor) {
+            const instructorExists = await Instructor.findById(updates.instructor);
+            if (!instructorExists) {
+                return NextResponse.json({ error: 'Instructor not found' }, { status: 404 });
+            }
+        }
+
+        const updatedCourse = await Course.findByIdAndUpdate(courseId, updates, {
             new: true,
             runValidators: true,
         });
