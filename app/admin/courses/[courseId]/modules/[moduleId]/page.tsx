@@ -11,6 +11,14 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import {
     Dialog,
     DialogContent,
     DialogHeader,
@@ -296,6 +304,23 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
     };
 
 
+    const handleDeleteVideo = async (videoId: string) => {
+        if (!confirm('Are you sure you want to delete this video?')) return;
+        try {
+            const res = await fetch(`/api/admin/videos/${videoId}`, { method: 'DELETE' });
+            if (res.ok) {
+                setModuleData((prev) =>
+                    prev ? { ...prev, videos: prev.videos.filter((v) => v._id !== videoId) } : null
+                );
+            } else {
+                alert('Failed to delete video');
+            }
+        } catch (error) {
+            console.error('Failed to delete video:', error);
+            alert('Failed to delete video');
+        }
+    };
+
     if (loading) return <div>Loading...</div>;
     if (!moduleData) return <div>Module not found</div>;
 
@@ -447,31 +472,55 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
                 </Dialog>
             </div>
 
-            <div className="grid gap-4">
-                {moduleData.videos && moduleData.videos.length === 0 ? (
-                    <p className="text-muted-foreground py-10">No videos in this module yet.</p>
-                ) : (
-                    moduleData.videos?.map((video) => (
-                        <Card key={video._id}>
-                            <CardContent className="p-4 flex items-center gap-4">
-                                <div className="bg-slate-100 p-3 rounded-full">
-                                    <PlayCircle className="w-6 h-6 text-slate-600" />
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="font-semibold">{video.title}</h3>
-                                    <p className="text-sm text-muted-foreground">{formatDuration(video.duration)}</p>
-                                </div>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => openEditVideo(video)}
-                                >
-                                    Edit
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    ))
-                )}
+            <div className="bg-white rounded-md border">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Title</TableHead>
+                            <TableHead>Duration</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {moduleData.videos && moduleData.videos.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={3} className="text-center py-10">
+                                    No videos in this module yet.
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            moduleData.videos?.map((video) => (
+                                <TableRow key={video._id}>
+                                    <TableCell className="font-medium group flex items-center gap-3">
+                                        <div className="bg-slate-100 p-2 rounded-full">
+                                            <PlayCircle className="w-5 h-5 text-slate-600" />
+                                        </div>
+                                        <span>{video.title}</span>
+                                    </TableCell>
+                                    <TableCell>{formatDuration(video.duration)}</TableCell>
+                                    <TableCell className="text-right space-x-2">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800"
+                                            onClick={() => openEditVideo(video)}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800"
+                                            onClick={() => handleDeleteVideo(video._id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
             </div>
         </div >
     );

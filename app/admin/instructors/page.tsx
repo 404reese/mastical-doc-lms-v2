@@ -41,6 +41,23 @@ export default function InstructorsPage() {
         fetchInstructors();
     }, []);
 
+    const handleDelete = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this instructor?')) return;
+        try {
+            const res = await fetch(`/api/admin/instructors/${id}`, {
+                method: 'DELETE',
+            });
+            if (res.ok) {
+                setInstructors((prev) => prev.filter((inst) => inst._id !== id));
+            } else {
+                alert('Failed to delete instructor');
+            }
+        } catch (error) {
+            console.error('Failed to delete instructor:', error);
+            alert('Failed to delete instructor');
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -87,9 +104,17 @@ export default function InstructorsPage() {
                                     </TableCell>
                                     <TableCell className="font-medium">{instructor.name}</TableCell>
                                     <TableCell>{instructor.expertise}</TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm">
+                                    <TableCell className="text-right space-x-2">
+                                        <Button variant="ghost" size="sm" className="bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800">
                                             Edit
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800"
+                                            onClick={() => handleDelete(instructor._id)}
+                                        >
+                                            Delete
                                         </Button>
                                     </TableCell>
                                 </TableRow>

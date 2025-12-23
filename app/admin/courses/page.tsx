@@ -45,6 +45,21 @@ export default function CoursesPage() {
         fetchCourses();
     }, []);
 
+    const handleDelete = async (courseId: string) => {
+        if (!confirm('Are you sure you want to delete this course?')) return;
+        try {
+            const res = await fetch(`/api/admin/courses/${courseId}`, { method: 'DELETE' });
+            if (res.ok) {
+                setCourses((prev) => prev.filter((c) => c._id !== courseId));
+            } else {
+                alert('Failed to delete course');
+            }
+        } catch (error) {
+            console.error('Failed to delete course:', error);
+            alert('Failed to delete course');
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -96,12 +111,20 @@ export default function CoursesPage() {
                                     </TableCell>
                                     <TableCell>₹{course.priceINR} / ${course.priceUSD}</TableCell>
                                     <TableCell>{course.enrollments}</TableCell>
-                                    <TableCell className="text-right">
+                                    <TableCell className="text-right space-x-2">
                                         <Link href={`/admin/courses/${course._id}`}>
-                                            <Button variant="ghost" size="sm">
+                                            <Button variant="ghost" size="sm" className="bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800">
                                                 Manage
                                             </Button>
                                         </Link>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800"
+                                            onClick={() => handleDelete(course._id)}
+                                        >
+                                            Delete
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))

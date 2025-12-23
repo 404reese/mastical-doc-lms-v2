@@ -32,6 +32,7 @@ export async function POST(req: Request) {
     }
 }
 
+import User from '@/lib/models/User';
 export async function GET() {
     try {
         await connectToDatabase();
@@ -39,7 +40,27 @@ export async function GET() {
         const courses = await Course.find({})
             .populate('instructor', 'name avatar')
             .sort({ createdAt: -1 });
-        return NextResponse.json(courses);
+
+        // Calculate enrollments dynamicallly
+        const enrollmentCounts = await User.aggregate([
+            { $unwind: '$purchasedCourses' },
+            { $group: { _id: '$purchasedCourses', count: { $sum: 1 } } },
+        ]);
+
+        const countMap = new Map();
+        enrollmentCounts.forEach((item) => {
+            countMap.set(String(item._id), item.count);
+        });
+
+        const coursesWithEnrollment = courses.map((course) => {
+            const courseObj = course.toObject();
+            return {
+                ...courseObj,
+                enrollments: countMap.get(String(course._id)) || 0,
+            };
+        });
+
+        return NextResponse.json(coursesWithEnrollment);
     } catch (error) {
         console.error('Error fetching courses:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

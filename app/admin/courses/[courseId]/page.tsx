@@ -12,6 +12,14 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import {
     Dialog,
     DialogContent,
     DialogHeader,
@@ -241,6 +249,23 @@ export default function CourseDetailPage(props: { params: Promise<{ courseId: st
     if (loading) return <div>Loading...</div>;
     if (!course) return <div>Course not found</div>;
 
+    const handleDeleteModule = async (moduleId: string) => {
+        if (!confirm('Are you sure you want to delete this module? All videos in it will be lost.')) return;
+        try {
+            const res = await fetch(`/api/admin/modules/${moduleId}`, { method: 'DELETE' });
+            if (res.ok) {
+                setCourse((prev) =>
+                    prev ? { ...prev, modules: prev.modules.filter((m) => m._id !== moduleId) } : null
+                );
+            } else {
+                alert('Failed to delete module');
+            }
+        } catch (error) {
+            console.error('Failed to delete module:', error);
+            alert('Failed to delete module');
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-start">
@@ -466,24 +491,48 @@ export default function CourseDetailPage(props: { params: Promise<{ courseId: st
                 </Dialog>
             </div>
 
-            <div className="grid gap-4">
-                {course.modules.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-10">No modules yet. Create one to get started.</p>
-                ) : (
-                    course.modules.map((module) => (
-                        <Link key={module._id} href={`/admin/courses/${params.courseId}/modules/${module._id}`}>
-                            <Card className="hover:bg-slate-50 transition-colors cursor-pointer">
-                                <CardContent className="p-6 flex items-center justify-between">
-                                    <span className="font-medium text-lg">{module.title}</span>
-                                    <div className="flex items-center text-muted-foreground">
-                                        <VideoIcon className="w-4 h-4 mr-2" />
-                                        <span>Manage Content</span>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    ))
-                )}
+            <div className="bg-white rounded-md border">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Title</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {course.modules.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={2} className="text-center py-10">
+                                    No modules yet. Create one to get started.
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            course.modules.map((module) => (
+                                <TableRow key={module._id}>
+                                    <TableCell className="font-medium text-lg">
+                                        {module.title}
+                                    </TableCell>
+                                    <TableCell className="text-right space-x-2">
+                                        <Link href={`/admin/courses/${params.courseId}/modules/${module._id}`}>
+                                            <Button variant="ghost" size="sm" className="bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800">
+                                                <VideoIcon className="w-4 h-4 mr-2" />
+                                                Manage Content
+                                            </Button>
+                                        </Link>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800"
+                                            onClick={() => handleDeleteModule(module._id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
             </div>
         </div>
     );

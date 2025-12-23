@@ -79,9 +79,43 @@ export async function PUT(req: Request, { params }: { params: Params }) {
             return NextResponse.json({ error: 'Video not found' }, { status: 404 });
         }
 
+
         return NextResponse.json(updatedVideo);
     } catch (error) {
         console.error('Error updating video:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    }
+}
+
+export async function DELETE(
+    req: Request,
+    props: { params: Params }
+) {
+    try {
+        await connectToDatabase();
+        const params = await props.params;
+        const { videoId } = params;
+
+        const videoToDelete = await Video.findById(videoId);
+
+        if (!videoToDelete) {
+            return NextResponse.json({ error: 'Video not found' }, { status: 404 });
+        }
+
+        // Remove video reference from Module
+        await Module.findByIdAndUpdate(videoToDelete.moduleId, {
+            $pull: { videos: videoId },
+        });
+
+        // Delete the video itself
+        await Video.findByIdAndDelete(videoId);
+
+        return NextResponse.json({ message: 'Video deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting video:', error);
+        return NextResponse.json(
+            { error: 'Internal Server Error' },
+            { status: 500 }
+        );
     }
 }

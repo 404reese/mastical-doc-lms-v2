@@ -211,7 +211,7 @@ export default function LearnClientPage({ course, isAuthenticated }: LearnClient
                                             {activeVideo?.title ? `Notes: ${activeVideo.title}` : "Course Notes"}
                                         </span>
                                         <span className="text-xs text-gray-500">
-                                            {notesUrl ? "Click to open in new tab (Secure Viewer)" : "No notes available"}
+                                            {notesUrl ? "Click to open in new tab" : "No notes available"}
                                         </span>
                                     </div>
                                     {notesUrl && (
