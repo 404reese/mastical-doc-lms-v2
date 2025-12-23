@@ -5,6 +5,7 @@ import Module from "@/lib/models/Module";
 import Video from "@/lib/models/Video";
 import Instructor from "@/lib/models/Instructor";
 import LearnClientPage from "./LearnClientPage";
+import { getSession } from "@/lib/session";
 
 // Ensure models are registered
 const _models = { Course, Module, Video, Instructor };
@@ -35,10 +36,11 @@ async function getCourse(id: string) {
 export default async function LearnPage({ params }: { params: Promise<{ courseId: string }> }) {
     const { courseId } = await params;
     const course = await getCourse(courseId);
+    const session = await getSession();
 
     if (!course) {
         notFound();
     }
 
-    return <LearnClientPage course={course} />;
+    return <LearnClientPage course={course} isAuthenticated={!!session?.userId} />;
 }

@@ -5,6 +5,7 @@ import LearnHeader from "@/components/learn/LearnHeader";
 import LearnSidebar from "@/components/learn/LearnSidebar";
 import VideoPlayer from "@/components/learn/VideoPlayer";
 import { FileText, Download } from "lucide-react";
+import Link from "next/link";
 import { toast } from "sonner";
 
 interface LearnInstructor {
@@ -39,6 +40,7 @@ interface LearnCourse {
 
 interface LearnClientPageProps {
     course: LearnCourse;
+    isAuthenticated: boolean;
 }
 
 interface ProgressData {
@@ -46,7 +48,7 @@ interface ProgressData {
     lastWatchedVideoId: string | null;
 }
 
-export default function LearnClientPage({ course }: LearnClientPageProps) {
+export default function LearnClientPage({ course, isAuthenticated }: LearnClientPageProps) {
     const [activeVideoId, setActiveVideoId] = useState<string>("");
     const [completedVideos, setCompletedVideos] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -183,31 +185,40 @@ export default function LearnClientPage({ course }: LearnClientPageProps) {
 
                     <div className="max-w-[1000px] mx-auto p-6 md:p-8 space-y-8">
 
-                        {/* Resources Section */}
+                        {/* Resources Section with PDF Viewer Link */}
                         <div className="bg-white border border-gray-200 rounded-lg p-8">
                             <h2 className="text-[1.2rem] font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">
                                 Course Resources
                             </h2>
-                            <a
-                                href={notesUrl || undefined}
-                                target={notesUrl ? "_blank" : undefined}
-                                rel={notesUrl ? "noopener noreferrer" : undefined}
-                                aria-disabled={!notesUrl}
-                                className={`flex items-center gap-4 p-4 border border-gray-200 rounded-md bg-gray-50 transition-all group ${notesUrl
-                                    ? "hover:bg-white hover:border-blue-600 hover:shadow-sm"
-                                    : "opacity-60 cursor-not-allowed"
-                                    }`}
-                                onClick={(e) => {
-                                    if (!notesUrl) e.preventDefault();
-                                }}
-                            >
-                                <FileText className="w-6 h-6 text-red-500" />
-                                <div className="flex flex-col">
-                                    <span className="font-semibold text-gray-900 text-sm">Lecture Notes: {activeVideo?.title || "Course Overview"}</span>
-                                    <span className="text-xs text-gray-500">Open notes</span>
-                                </div>
-                                <Download className="w-5 h-5 text-gray-400 ml-auto group-hover:text-gray-600" />
-                            </a>
+                            <div className="space-y-4">
+                                <Link
+                                    href={notesUrl ? `/pdf-viewer?url=${encodeURIComponent(notesUrl)}` : "#"}
+                                    target={notesUrl ? "_blank" : undefined}
+                                    rel={notesUrl ? "noopener noreferrer" : undefined}
+                                    onClick={(e) => {
+                                        if (!notesUrl) {
+                                            e.preventDefault();
+                                        }
+                                    }}
+                                    className={`flex items-center gap-4 p-4 border border-gray-200 rounded-md bg-gray-50 transition-all group w-full text-left ${notesUrl
+                                        ? "hover:bg-white hover:border-blue-600 hover:shadow-sm cursor-pointer"
+                                        : "opacity-60 cursor-not-allowed"
+                                        }`}
+                                >
+                                    <FileText className="w-6 h-6 text-red-500" />
+                                    <div className="flex flex-col">
+                                        <span className="font-semibold text-gray-900 text-sm">
+                                            {activeVideo?.title ? `Notes: ${activeVideo.title}` : "Course Notes"}
+                                        </span>
+                                        <span className="text-xs text-gray-500">
+                                            {notesUrl ? "Click to open in new tab (Secure Viewer)" : "No notes available"}
+                                        </span>
+                                    </div>
+                                    {notesUrl && (
+                                        <Download className="w-5 h-5 text-gray-400 ml-auto group-hover:text-gray-600" />
+                                    )}
+                                </Link>
+                            </div>
                         </div>
 
                         {/* Instructor Section */}

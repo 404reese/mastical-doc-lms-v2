@@ -55,6 +55,7 @@ export function Sidebar({ role }: { role?: string }) {
                     <span className="text-sm font-medium">Logout</span>
                 </button>
             </div>
+            <p className="text-slate-500 mt-auto font-mono">Powered by <a href="https://mastical.com" target="_blank" rel="noopener noreferrer"><span className="font-semibold">Mastical</span></a></p>
         </aside>
     );
 }
