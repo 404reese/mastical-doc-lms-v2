@@ -20,7 +20,8 @@ interface Course {
     title: string;
     category: string;
     level: string;
-    price: number;
+    priceINR: number;
+    priceUSD: number;
     enrollments: number;
     courseId: string; // Assuming we use _id as the link mostly
 }
@@ -93,7 +94,7 @@ export default function CoursesPage() {
                                     <TableCell>
                                         <Badge variant="outline">{course.level}</Badge>
                                     </TableCell>
-                                    <TableCell>${course.price}</TableCell>
+                                    <TableCell>₹{course.priceINR} / ${course.priceUSD}</TableCell>
                                     <TableCell>{course.enrollments}</TableCell>
                                     <TableCell className="text-right">
                                         <Link href={`/admin/courses/${course._id}`}>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpen, Home, LogOut, Users } from 'lucide-react';
+import { BookOpen, Home, LogOut, Users, Shield } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -12,10 +12,16 @@ const sidebarItems = [
     { icon: BookOpen, label: 'Courses', href: '/admin/courses' },
 ];
 
-export function Sidebar() {
+export function Sidebar({ role }: { role?: string }) {
     const pathname = usePathname();
 
     const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+
+    // Filter items based on role if needed, or just append "Manage Admins" for superadmin
+    const items = [...sidebarItems];
+    if (role === 'superadmin') {
+        items.push({ icon: Shield, label: 'Manage Admins', href: '/admin/manage' });
+    }
 
     return (
         <aside className="w-64 bg-slate-50 text-slate-900 min-h-screen p-4 flex flex-col border-r border-slate-200">
@@ -32,7 +38,7 @@ export function Sidebar() {
             </div>
 
             <nav className="flex-1 space-y-1">
-                {sidebarItems.map((item) => (
+                {items.map((item) => (
                     <SidebarLink
                         key={item.href}
                         href={item.href}

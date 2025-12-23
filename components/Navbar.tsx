@@ -5,7 +5,11 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
-export default function Navbar() {
+interface NavbarProps {
+    isLoggedIn?: boolean;
+}
+
+export default function Navbar({ isLoggedIn = false }: NavbarProps) {
     const pathname = usePathname();
     const isHome = pathname === "/";
 
@@ -48,14 +52,16 @@ export default function Navbar() {
                             Forums
                         </Link>
                     </li>
-                    <li>
-                        <Link
-                            href="/admin/dashboard"
-                            className="text-[#EF4444] font-semibold text-[1rem] hover:text-[#dc2626] transition-colors"
-                        >
-                            Admin
-                        </Link>
-                    </li>
+                    {isLoggedIn && (
+                        <li>
+                            <Link
+                                href="/admin/dashboard"
+                                className="text-[#EF4444] font-semibold text-[1rem] hover:text-[#dc2626] transition-colors"
+                            >
+                                Admin
+                            </Link>
+                        </li>
+                    )}
                 </ul>
 
                 {/* Nav Actions */}
@@ -63,9 +69,19 @@ export default function Navbar() {
                     <div className="flex items-center gap-1.5 font-semibold text-[#334155] cursor-pointer hover:text-[#2563EB] transition-colors">
                         <i className="fa-solid fa-globe"></i> EN
                     </div>
-                    <button className="bg-[#2563EB] text-white px-6 py-2.5 rounded-md font-semibold text-sm hover:bg-[#1D4ED8] transition-all">
-                        Get Started
-                    </button>
+                    {isLoggedIn ? (
+                        <Link href="/dashboard">
+                            <button className="bg-[#2563EB] text-white px-6 py-2.5 rounded-md font-semibold text-sm hover:bg-[#1D4ED8] transition-all">
+                                Dashboard
+                            </button>
+                        </Link>
+                    ) : (
+                        <Link href="/login">
+                            <button className="bg-[#2563EB] text-white px-6 py-2.5 rounded-md font-semibold text-sm hover:bg-[#1D4ED8] transition-all">
+                                Get Started
+                            </button>
+                        </Link>
+                    )}
                 </div>
             </div>
         </nav>

@@ -98,7 +98,7 @@ export default function NewInstructorPage() {
                             <Input
                                 id="expertise"
                                 name="expertise"
-                                placeholder="Ex: Senior Full Stack Developer"
+                                placeholder="Ex: BHMS"
                                 value={formData.expertise}
                                 onChange={handleChange}
                             />

@@ -41,7 +41,8 @@ interface Course {
     title: string;
     description: string;
     instructor: string | { _id: string; name: string };
-    price: number;
+    priceINR: number;
+    priceUSD: number;
     level: string;
     category?: string;
     language?: string;
@@ -74,7 +75,8 @@ export default function CourseDetailPage(props: { params: Promise<{ courseId: st
         category: '',
         language: '',
         level: '',
-        price: '',
+        priceINR: '',
+        priceUSD: '',
         duration: '',
         previewVideoLink: '',
         previewImageLink: '',
@@ -131,7 +133,8 @@ export default function CourseDetailPage(props: { params: Promise<{ courseId: st
             category: course.category ?? '',
             language: course.language ?? '',
             level: course.level ?? '',
-            price: String(course.price ?? ''),
+            priceINR: String(course.priceINR ?? ''),
+            priceUSD: String(course.priceUSD ?? ''),
             duration: course.duration != null ? String(course.duration) : '',
             previewVideoLink: course.previewVideoLink ?? '',
             previewImageLink: course.previewImageLink ?? '',
@@ -169,8 +172,10 @@ export default function CourseDetailPage(props: { params: Promise<{ courseId: st
                     category: courseForm.category || undefined,
                     language: courseForm.language || undefined,
                     level: courseForm.level || undefined,
-                    price:
-                        courseForm.price === '' ? undefined : Number(courseForm.price),
+                    priceINR:
+                        courseForm.priceINR === '' ? undefined : Number(courseForm.priceINR),
+                    priceUSD:
+                        courseForm.priceUSD === '' ? undefined : Number(courseForm.priceUSD),
                     duration:
                         courseForm.duration === ''
                             ? undefined
@@ -244,7 +249,7 @@ export default function CourseDetailPage(props: { params: Promise<{ courseId: st
                     <p className="text-muted-foreground mt-2">{course.description}</p>
                     <div className="flex gap-2 mt-4">
                         <Badge>{course.level}</Badge>
-                        <Badge variant="outline">${course.price}</Badge>
+                        <Badge variant="outline">₹{course.priceINR} / ${course.priceUSD}</Badge>
                     </div>
                 </div>
                 <Dialog open={isEditCourseOpen} onOpenChange={setIsEditCourseOpen}>
@@ -322,18 +327,32 @@ export default function CourseDetailPage(props: { params: Promise<{ courseId: st
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="price">Price ($)</Label>
+                                    <Label htmlFor="priceINR">Price (₹ INR)</Label>
                                     <Input
-                                        id="price"
-                                        name="price"
+                                        id="priceINR"
+                                        name="priceINR"
                                         type="number"
                                         min="0"
-                                        value={courseForm.price}
+                                        value={courseForm.priceINR}
                                         onChange={handleCourseFieldChange}
                                     />
                                 </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="priceUSD">Price ($ USD)</Label>
+                                    <Input
+                                        id="priceUSD"
+                                        name="priceUSD"
+                                        type="number"
+                                        min="0"
+                                        value={courseForm.priceUSD}
+                                        onChange={handleCourseFieldChange}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="duration">Duration (min)</Label>
                                     <Input

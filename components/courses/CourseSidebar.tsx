@@ -4,29 +4,39 @@ import { useState } from "react";
 import { Play } from "lucide-react";
 import Link from "next/link";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface CourseSidebarProps {
     courseId: string;
-    price: number;
-    originalPrice?: number;
+    priceINR: number;
+    priceUSD: number;
+    originalPriceINR?: number;
+    originalPriceUSD?: number;
     previewImage: string;
     previewVideoLink?: string;
+    isPurchased?: boolean;
 }
 
 export default function CourseSidebar({
     courseId,
-    price,
-    originalPrice,
+    priceINR,
+    priceUSD,
+    originalPriceINR,
+    originalPriceUSD,
     previewImage,
     previewVideoLink,
+    isPurchased = false,
 }: CourseSidebarProps) {
-
+    const { currency, isLoading } = useCurrency();
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
     const previewEmbedUrl = previewVideoLink ? toVimeoEmbedUrl(previewVideoLink) : undefined;
 
-    // Simple calculation for display
-    const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
+    // Simple calculation for display - use safe defaults
+    const safeINR = priceINR || 0;
+    const safeUSD = priceUSD || 0;
+    const discountINR = originalPriceINR ? Math.round(((originalPriceINR - safeINR) / originalPriceINR) * 100) : 0;
+    const discountUSD = originalPriceUSD ? Math.round(((originalPriceUSD - safeUSD) / originalPriceUSD) * 100) : 0;
 
     return (
         <div className="sticky top-8 bg-white border border-gray-200 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)] rounded-[2px] overflow-hidden max-w-[500px] mx-auto lg:mx-0">
@@ -84,28 +94,57 @@ export default function CourseSidebar({
             )}
 
             <div className="p-8">
-                <div className="flex items-baseline gap-2.5 mb-6">
-                    <span className="text-[2rem] font-bold text-gray-900">${price}</span>
-                    {originalPrice && (
-                        <>
-                            <span className="text-[1.1rem] text-gray-500 line-through">${originalPrice}</span>
-                            <span className="text-[1rem] text-gray-500">{discount}% off</span>
-                        </>
-                    )}
-                </div>
+                {/* Currency-based Pricing Display */}
+                {isLoading ? (
+                    <div className="flex items-baseline gap-2.5 mb-6">
+                        <span className="text-[2rem] font-bold text-gray-300 animate-pulse">Loading...</span>
+                    </div>
+                ) : currency === 'INR' ? (
+                    /* INR Pricing for India, Sri Lanka, Nepal */
+                    <div className="flex items-baseline gap-2.5 mb-6">
+                        <span className="text-[2rem] font-bold text-gray-900">₹{safeINR.toLocaleString('en-IN')}</span>
+                        {originalPriceINR && (
+                            <>
+                                <span className="text-[1.1rem] text-gray-500 line-through">₹{originalPriceINR.toLocaleString('en-IN')}</span>
+                                <span className="text-[1rem] text-gray-500">{discountINR}% off</span>
+                            </>
+                        )}
+                    </div>
+                ) : (
+                    /* USD Pricing for other countries */
+                    <div className="flex items-baseline gap-2.5 mb-6">
+                        <span className="text-[2rem] font-bold text-gray-900">${safeUSD}</span>
+                        {originalPriceUSD && (
+                            <>
+                                <span className="text-[1.1rem] text-gray-500 line-through">${originalPriceUSD}</span>
+                                <span className="text-[1rem] text-gray-500">{discountUSD}% off</span>
+                            </>
+                        )}
+                    </div>
+                )}
 
-                <Link
-                    href={`/courses/${courseId}/learn`}
-                    className="block w-full text-center py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors mb-4"
-                >
-                    Go to Course
-                </Link>
+                {isPurchased ? (
+                    <Link
+                        href={`/courses/${courseId}/learn`}
+                        className="block w-full text-center py-3 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-md transition-colors mb-4"
+                    >
+                        Go to Course
+                    </Link>
+                ) : (
+                    <Link
+                        href={`/payment?courseId=${courseId}`}
+                        className="block w-full text-center py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors mb-4"
+                    >
+                        Enroll Now
+                    </Link>
+                )}
+
 
                 <div className="text-center mb-4 text-sm">
                     <span className="text-gray-500">Have doubts? <Link href="#" className="underline">Talk to Our Team</Link></span>
                 </div>
 
-                
+
             </div>
         </div>
     );

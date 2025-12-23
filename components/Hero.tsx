@@ -14,9 +14,9 @@ export default function Hero() {
             <div className="max-w-[1240px] mx-auto px-6 flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-0">
 
                 {/* Hero Content */}
-                <div className="max-w-[550px] flex flex-col items-center lg:items-start text-center lg:text-left">
+                <div className="max-w-[550px] flex flex-col items-center lg:items-start text-center lg:text-left"><p>Welcome to the</p>
                     <h1 className="text-5xl lg:text-[4rem] leading-[1.1] mb-6 text-[#172554] font-extrabold">
-                        Learn. Heal. Lead.
+                         ACADEMY OF CLASSICAL HOMEOPATHY.
                     </h1>
                     <p className="text-lg lg:text-[1.15rem] mb-10 text-[#475569] leading-relaxed">
                         Advance your medical expertise with world-class courses designed for

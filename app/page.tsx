@@ -6,10 +6,14 @@ import CourseFilters from "@/components/CourseFilters";
 import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
 
-export default function Home() {
+import { getSession } from "@/lib/session";
+
+export default async function Home() {
+  const session = await getSession();
+
   return (
     <main className="min-h-screen font-sans">
-      <Navbar />
+      <Navbar isLoggedIn={!!session} />
       <Hero />
       <WhyTrustUs />
       <Features />

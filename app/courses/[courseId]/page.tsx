@@ -6,6 +6,8 @@ import Course from "@/lib/models/Course";
 import Module from "@/lib/models/Module";
 import Video from "@/lib/models/Video";
 import Instructor from "@/lib/models/Instructor";
+import { getSession } from "@/lib/session";
+import User from "@/lib/models/User";
 
 // Components
 import Breadcrumbs from "@/components/courses/Breadcrumbs";
@@ -13,7 +15,7 @@ import CourseHero from "@/components/courses/CourseHero";
 import CourseSidebar from "@/components/courses/CourseSidebar";
 import Requirements from "@/components/courses/Requirements";
 import CourseContent from "@/components/courses/CourseContent";
-import InstructorSection from "@/components/courses/InstructorSection";
+import InstructorsPopup from "@/components/courses/InstructorsPopup";
 
 const _models = { Course, Module, Video, Instructor };
 
@@ -24,7 +26,11 @@ async function getCourse(id: string) {
             .populate("instructor")
             .populate({
                 path: "modules",
-                populate: { path: "videos", model: "Video" }
+                populate: {
+                    path: "videos",
+                    model: "Video",
+                    populate: { path: "instructor", model: "Instructor" }
+                }
             })
             .lean();
         if (!course) return null;
@@ -34,9 +40,38 @@ async function getCourse(id: string) {
     }
 }
 
+async function checkIsPurchased(courseId: string) {
+    await connectToDatabase();
+    const session = await getSession();
+    if (!session?.userId) return false;
+
+    const user = await User.findById(session.userId).select("purchasedCourses").lean();
+    return user?.purchasedCourses?.some((id: any) => id.toString() === courseId) || false;
+}
+
+// Extract all unique instructors from course videos
+function extractInstructorsFromCourse(course: any) {
+    const instructorsMap = new Map();
+
+    if (course.modules && Array.isArray(course.modules)) {
+        for (const module of course.modules) {
+            if (module.videos && Array.isArray(module.videos)) {
+                for (const video of module.videos) {
+                    if (video.instructor && video.instructor._id) {
+                        instructorsMap.set(video.instructor._id, video.instructor);
+                    }
+                }
+            }
+        }
+    }
+
+    return Array.from(instructorsMap.values());
+}
+
 export default async function CourseDetailPage({ params }: { params: Promise<{ courseId: string }> }) {
     const { courseId } = await params;
     const course = await getCourse(courseId);
+    const isPurchased = await checkIsPurchased(courseId);
 
     if (!course) {
         notFound();
@@ -48,11 +83,15 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
         { label: course.category || "Surgery", href: "/courses" },
     ];
 
-    const originalPrice = Math.round(course.price * 1.5); // 33% discount approx
+    const originalPriceINR = Math.round((course.priceINR || 0) * 1.5); // 33% discount approx
+    const session = await getSession();
+
+    // Extract all unique instructors from course videos
+    const instructors = extractInstructorsFromCourse(course);
 
     return (
         <div className="font-sans text-gray-600 bg-white">
-            <Navbar />
+            <Navbar isLoggedIn={!!session} />
 
             <div className="max-w-[1240px] mx-auto px-6">
                 <Breadcrumbs items={breadcrumbs} />
@@ -63,7 +102,6 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
                         <CourseHero
                             title={course.title}
                             description={course.shortDescription || course.description.substring(0, 150) + "..."}
-                            instructorName={course.instructor?.name || "Dr. Sarah Johnson"}
                             lastUpdated={course.updatedAt}
                             language={course.language || "English"}
                         />
@@ -82,8 +120,8 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
 
                         <CourseContent modules={course.modules || []} />
 
-                        {course.instructor && (
-                            <InstructorSection instructor={course.instructor} />
+                        {instructors.length > 0 && (
+                            <InstructorsPopup instructors={instructors} />
                         )}
                     </main>
 
@@ -91,10 +129,12 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
                     <aside className="relative">
                         <CourseSidebar
                             courseId={courseId}
-                            price={course.price || 49}
-                            originalPrice={originalPrice}
+                            priceINR={course.priceINR || 0}
+                            priceUSD={course.priceUSD || 0}
+                            originalPriceINR={originalPriceINR}
                             previewImage={course.previewImageLink}
                             previewVideoLink={course.previewVideoLink}
+                            isPurchased={isPurchased}
                         />
                     </aside>
                 </div>
@@ -104,3 +144,4 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
         </div>
     );
 }
+

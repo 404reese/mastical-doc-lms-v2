@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LocationIndicator from "./LocationIndicator";
 
 const year = new Date().getFullYear();
 export default function Footer() {
@@ -129,6 +130,13 @@ export default function Footer() {
                             </span>
                         </li>
                     </ul>
+                </div>
+            </div>
+
+            {/* Location Indicator Row */}
+            <div className="border-t border-white/10 py-3">
+                <div className="max-w-[1240px] mx-auto px-6 flex justify-center">
+                    <LocationIndicator />
                 </div>
             </div>
 

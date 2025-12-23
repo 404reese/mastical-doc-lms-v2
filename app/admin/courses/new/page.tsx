@@ -29,7 +29,8 @@ export default function NewCoursePage() {
         title: '',
         description: '',
         instructor: '',
-        price: '',
+        priceINR: '',
+        priceUSD: '',
         level: 'Beginner',
         category: '',
         language: 'English',
@@ -70,7 +71,8 @@ export default function NewCoursePage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...formData,
-                    price: Number(formData.price),
+                    priceINR: Number(formData.priceINR),
+                    priceUSD: Number(formData.priceUSD),
                     duration: Number(formData.duration)
                 }),
             });
@@ -164,19 +166,35 @@ export default function NewCoursePage() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4">
-                            {/* Price */}
+                        <div className="grid grid-cols-2 gap-4">
+                            {/* Price INR */}
                             <div className="space-y-2">
-                                <Label htmlFor="price">Price ($)</Label>
+                                <Label htmlFor="priceINR">Price (₹ INR)</Label>
                                 <Input
-                                    id="price"
-                                    name="price"
+                                    id="priceINR"
+                                    name="priceINR"
                                     type="number"
                                     min="0"
-                                    value={formData.price}
+                                    value={formData.priceINR}
                                     onChange={handleChange}
                                 />
                             </div>
+
+                            {/* Price USD */}
+                            <div className="space-y-2">
+                                <Label htmlFor="priceUSD">Price ($ USD)</Label>
+                                <Input
+                                    id="priceUSD"
+                                    name="priceUSD"
+                                    type="number"
+                                    min="0"
+                                    value={formData.priceUSD}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
 
                             {/* Duration */}
                             <div className="space-y-2">

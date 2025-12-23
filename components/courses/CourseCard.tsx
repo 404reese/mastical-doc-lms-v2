@@ -5,39 +5,39 @@ import { Clock, Users, BookOpen, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface CourseCardProps {
     course: {
         _id: string;
         title: string;
         description: string;
-        price: number;
+        priceINR: number;
+        priceUSD: number;
         level?: string;
         category?: string;
         language?: string;
         duration?: number; // minutes
         enrollments?: number;
-        instructor?: {
-            name: string;
-            avatar?: string;
-        } | null;
         previewImageLink?: string;
         rating?: number; // Mock data for now if not in schema
     };
+    isPurchased?: boolean;
 }
 
-export default function CourseCard({ course }: CourseCardProps) {
+export default function CourseCard({ course, isPurchased = false }: CourseCardProps) {
+    const { currency, isLoading } = useCurrency();
     const {
         _id,
         title,
         description,
-        price,
+        priceINR = 0,
+        priceUSD = 0,
         level = "Beginner",
         category = "General",
         language = "English",
         duration = 0,
         enrollments = 0,
-        instructor,
         previewImageLink,
         rating = 4.5,
     } = course;
@@ -86,7 +86,7 @@ export default function CourseCard({ course }: CourseCardProps) {
                 </div>
 
                 {/* Title */}
-                <Link href={`/courses/${_id}`} className="block group">
+                <Link href={isPurchased ? `/courses/${_id}/learn` : `/courses/${_id}`} className="block group">
                     <h3 className="text-xl font-bold text-slate-900 mb-2 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">
                         {title}
                     </h3>
@@ -96,23 +96,6 @@ export default function CourseCard({ course }: CourseCardProps) {
                 <p className="text-slate-500 text-sm mb-6 line-clamp-3 leading-relaxed">
                     {description}
                 </p>
-
-                {/* Instructor */}
-                <div className="flex items-center gap-3 mt-auto">
-                    <div className="w-10 h-10 rounded-full bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200">
-                        {instructor?.avatar ? (
-                            <img src={instructor.avatar} alt={instructor.name} className="w-full h-full object-cover" />
-                        ) : (
-                            <div className="w-full h-full flex items-center justify-center text-slate-400">
-                                <Users className="w-5 h-5" />
-                            </div>
-                        )}
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-slate-800">{instructor?.name || "Unknown Instructor"}</span>
-                        <span className="text-xs text-slate-500">Instructor</span>
-                    </div>
-                </div>
             </CardContent>
 
             <CardFooter className="p-5 pt-0 flex flex-col gap-4 border-t border-slate-50 bg-slate-50/30">
@@ -128,15 +111,32 @@ export default function CourseCard({ course }: CourseCardProps) {
                 </div>
 
                 <div className="flex items-center justify-between w-full mt-1">
-                    <span className="text-2xl font-bold text-slate-900">
-                        ${price}
-                    </span>
-                    <Link href={`/courses/${_id}`} className="w-auto">
-                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 shadow-md shadow-blue-600/20">
-                            <BookOpen className="w-4 h-4 mr-2" />
-                            Enroll Now
-                        </Button>
-                    </Link>
+                    {isLoading ? (
+                        <span className="text-2xl font-bold text-slate-300 animate-pulse">...</span>
+                    ) : currency === 'INR' ? (
+                        <span className="text-2xl font-bold text-slate-900">
+                            ₹{Number(priceINR || 0).toLocaleString('en-IN')}
+                        </span>
+                    ) : (
+                        <span className="text-2xl font-bold text-slate-900">
+                            ${Number(priceUSD || 0)}
+                        </span>
+                    )}
+                    {isPurchased ? (
+                        <Link href={`/courses/${_id}/learn`} className="w-auto">
+                            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 shadow-md shadow-emerald-600/20">
+                                <BookOpen className="w-4 h-4 mr-2" />
+                                Go to Course
+                            </Button>
+                        </Link>
+                    ) : (
+                        <Link href={`/courses/${_id}`} className="w-auto">
+                            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 shadow-md shadow-blue-600/20">
+                                <BookOpen className="w-4 h-4 mr-2" />
+                                Enroll Now
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </CardFooter>
         </Card>

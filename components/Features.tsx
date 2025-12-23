@@ -19,11 +19,10 @@ export default function Features() {
                             <i className="fa-solid fa-book-open"></i>
                         </div>
                         <h3 className="text-[1.25rem] font-bold text-[#1e3a8a] mb-3">
-                            Interactive Lessons
+                            Hybrid Lessons
                         </h3>
                         <p className="text-sm text-[#475569] leading-relaxed">
-                            Engage with multimedia content, 3D medical visualizations, and
-                            interactive case simulations.
+                            Get access to live online and recorded lessons.
                         </p>
                     </div>
 
