@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronUp, ChevronDown, PlayCircle, Lock, Circle, CircleCheck, Video } from "lucide-react";
+import { ChevronUp, ChevronDown, PlayCircle, Circle, CircleCheck, Video } from "lucide-react";
+import { formatDuration } from "@/lib/utils";
 
 interface Video {
     _id: string;
@@ -19,6 +20,7 @@ interface LearnSidebarProps {
     modules: Module[];
     activeVideoId: string;
     onVideoSelect: (videoId: string) => void;
+    completedVideos?: string[];
     progressPercentage?: number;
 }
 
@@ -26,7 +28,8 @@ export default function LearnSidebar({
     modules,
     activeVideoId,
     onVideoSelect,
-    progressPercentage = 15
+    completedVideos = [],
+    progressPercentage = 0
 }: LearnSidebarProps) {
 
     // Allow toggling of modules
@@ -44,20 +47,31 @@ export default function LearnSidebar({
                 <h2 className="font-bold text-gray-900 mb-2">Course Content</h2>
                 <div className="text-xs text-gray-500 mb-2">{progressPercentage}% Completed</div>
                 <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-blue-600" style={{ width: `${progressPercentage}%` }}></div>
+                    <div
+                        className="h-full bg-blue-600 transition-all duration-300"
+                        style={{ width: `${progressPercentage}%` }}
+                    ></div>
                 </div>
             </div>
 
             <div className="flex-1 overflow-y-auto">
                 {modules.map((module) => {
                     const isExpanded = expandedModules.includes(module._id);
+                    const moduleCompletedCount = module.videos.filter(v => completedVideos.includes(v._id)).length;
+                    const moduleTotal = module.videos.length;
+
                     return (
                         <div key={module._id}>
                             <div
                                 onClick={() => toggleModule(module._id)}
                                 className="bg-gray-50 p-4 px-6 border-b border-gray-200 font-semibold text-[0.95rem] text-gray-900 flex justify-between items-center cursor-pointer hover:bg-gray-100 transition-colors"
                             >
-                                <span className="line-clamp-1">Section: {module.title}</span>
+                                <div className="flex flex-col">
+                                    <span className="line-clamp-1">Section: {module.title}</span>
+                                    <span className="text-xs font-normal text-gray-500 mt-1">
+                                        {moduleCompletedCount}/{moduleTotal} completed
+                                    </span>
+                                </div>
                                 {isExpanded ? <ChevronUp className="w-3.5 h-3.5 text-gray-500" /> : <ChevronDown className="w-3.5 h-3.5 text-gray-500" />}
                             </div>
 
@@ -65,6 +79,8 @@ export default function LearnSidebar({
                                 <div className="block">
                                     {module.videos.map((video) => {
                                         const isActive = video._id === activeVideoId;
+                                        const isCompleted = completedVideos.includes(video._id);
+
                                         return (
                                             <div
                                                 key={video._id}
@@ -74,16 +90,22 @@ export default function LearnSidebar({
                                             ${isActive ? 'bg-blue-50 border-l-4 border-l-blue-600 pl-[calc(1.5rem-4px)]' : 'hover:bg-gray-50'}
                                         `}
                                             >
-                                                <div className={`mt-1 ${isActive ? 'text-blue-600' : 'text-gray-300'}`}>
-                                                    {isActive ? <PlayCircle className="w-4 h-4" /> : <Circle className="w-4 h-4" />}
+                                                <div className={`mt-1 ${isCompleted ? 'text-green-500' : isActive ? 'text-blue-600' : 'text-gray-300'}`}>
+                                                    {isCompleted ? (
+                                                        <CircleCheck className="w-4 h-4" />
+                                                    ) : isActive ? (
+                                                        <PlayCircle className="w-4 h-4" />
+                                                    ) : (
+                                                        <Circle className="w-4 h-4" />
+                                                    )}
                                                 </div>
                                                 <div className="flex flex-col gap-1">
-                                                    <span className={`text-[0.9rem] font-medium leading-normal ${isActive ? 'text-blue-600' : 'text-gray-600'}`}>
+                                                    <span className={`text-[0.9rem] font-medium leading-normal ${isCompleted ? 'text-green-700' : isActive ? 'text-blue-600' : 'text-gray-600'}`}>
                                                         {video.title}
                                                     </span>
                                                     <div className="flex items-center gap-1.5 text-xs text-gray-400">
                                                         <Video className="w-3 h-3" />
-                                                        <span>{video.duration ? `${Math.floor(video.duration / 60)} min` : "5 min"}</span>
+                                                        <span>{formatDuration(video.duration)}</span>
                                                     </div>
                                                 </div>
                                             </div>

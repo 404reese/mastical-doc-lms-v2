@@ -26,8 +26,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Plus, PlayCircle } from 'lucide-react';
-
+import { Plus, PlayCircle, Loader2 } from 'lucide-react';
+import { formatDuration } from '@/lib/utils';
 interface Video {
     _id: string;
     title: string;
@@ -84,6 +84,20 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
         notesUrl: '',
     });
     const [isUploading, setIsUploading] = useState(false);
+    const [fetchingDuration, setFetchingDuration] = useState(false);
+
+    // Helpers
+    const fetchVimeoDuration = async (url: string): Promise<number | null> => {
+        try {
+            const oembedUrl = `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}`;
+            const res = await fetch(oembedUrl);
+            if (!res.ok) return null;
+            const data = await res.json();
+            return data.duration; // Vimeo returns duration in seconds
+        } catch {
+            return null;
+        }
+    };
 
     // Fetch data function needs to be improved because we don't have a direct API to get ONE module. 
     // We only implemented Create Module.
@@ -122,8 +136,17 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
     }, [params.courseId, params.moduleId]);
 
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+
+        if (e.target.name === 'link' && e.target.value.includes('vimeo.com')) {
+            setFetchingDuration(true);
+            const duration = await fetchVimeoDuration(e.target.value);
+            if (duration) {
+                setFormData(prev => ({ ...prev, duration: String(duration) }));
+            }
+            setFetchingDuration(false);
+        }
     };
 
     const handleSelectChange = (val: string) => {
@@ -134,8 +157,17 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
         setEditFormData({ ...editFormData, instructor: val });
     };
 
-    const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleEditChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+
+        if (e.target.name === 'link' && e.target.value.includes('vimeo.com')) {
+            setFetchingDuration(true);
+            const duration = await fetchVimeoDuration(e.target.value);
+            if (duration) {
+                setEditFormData(prev => ({ ...prev, duration: String(duration) }));
+            }
+            setFetchingDuration(false);
+        }
     };
 
 
@@ -290,8 +322,11 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label>Duration (min)</Label>
-                                    <Input name="duration" type="number" value={editFormData.duration} onChange={handleEditChange} />
+                                    <Label>Duration (minutes)</Label>
+                                    <div className="relative">
+                                        <Input name="duration" type="number" value={editFormData.duration} onChange={handleEditChange} />
+                                        {fetchingDuration && <Loader2 className="h-4 w-4 absolute right-3 top-2.5 animate-spin text-muted-foreground" />}
+                                    </div>
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Instructor</Label>
@@ -349,8 +384,11 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label>Duration (min)</Label>
-                                    <Input name="duration" type="number" value={formData.duration} onChange={handleChange} />
+                                    <Label>Duration (seconds)</Label>
+                                    <div className="relative">
+                                        <Input name="duration" type="number" value={formData.duration} onChange={handleChange} />
+                                        {fetchingDuration && <Loader2 className="h-4 w-4 absolute right-3 top-2.5 animate-spin text-muted-foreground" />}
+                                    </div>
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Instructor</Label>
@@ -421,7 +459,7 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
                                 </div>
                                 <div className="flex-1">
                                     <h3 className="font-semibold">{video.title}</h3>
-                                    <p className="text-sm text-muted-foreground">{video.duration} mins</p>
+                                    <p className="text-sm text-muted-foreground">{formatDuration(video.duration)}</p>
                                 </div>
                                 <Button
                                     variant="ghost"
