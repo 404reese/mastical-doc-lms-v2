@@ -1,0 +1,338 @@
+/* ================= GLOBAL RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* Using Inter font as requested */
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+    position: absolute; /* Sits on top of the hero gradient */
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 25px 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #1E2A78;
+    letter-spacing: -0.5px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: #444;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+
+.nav-links li a:hover {
+    color: #1E2A78;
+}
+
+/* Navbar Login Button Style */
+.nav-btn {
+    border: 1px solid #1E2A78;
+    padding: 8px 24px;
+    border-radius: 50px;
+    color: #1E2A78 !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: #1E2A78;
+    color: white !important;
+}
+
+.mobile-menu-icon {
+    display: none;
+    cursor: pointer;
+    color: #1E2A78;
+}
+
+/* ================= HERO SECTION ================= */
+.hero-section {
+    width: 100%;
+    min-height: 100vh; /* Takes full screen height */
+    
+    /* GRADIENT FLOW: Light Blue to Pure White */
+    background: linear-gradient(180deg, #EAF6FF 0%, #FFFFFF 100%);
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px; /* Offset for navbar */
+    text-align: center;
+}
+
+.hero-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 60px;
+}
+
+.sub-heading {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #5A6B8C;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.main-heading {
+    font-size: 4rem; /* Massive Premium Text */
+    font-weight: 800;
+    color: #1E2A78;
+    line-height: 1.1;
+    margin-bottom: 35px;
+    letter-spacing: -1px;
+}
+
+.hero-description {
+    max-width: 800px;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #4A5C85;
+    margin-bottom: 50px;
+    font-weight: 400;
+}
+
+/* Buttons */
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+/* Primary Button (Solid Blue) */
+.btn-primary {
+    background-color: #1E2A78;
+    color: #ffffff;
+    box-shadow: 0 10px 20px rgba(30, 42, 120, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(30, 42, 120, 0.3);
+    background-color: #151e5e;
+}
+
+/* Secondary Button (Outline/Ghost) */
+.btn-secondary {
+    background-color: transparent;
+    color: #1E2A78;
+    border: 1px solid #1E2A78;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(30, 42, 120, 0.05);
+    transform: translateY(-2px);
+}
+
+
+/* ================= FEATURES SECTION ================= */
+.features-section {
+    width: 100%;
+    padding: 100px 0; /* Generous spacing */
+    
+    /* GRADIENT FLOW: Continues from White to Light Blue */
+    background: linear-gradient(180deg, #FFFFFF 0%, #EAF6FF 100%);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 80px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.section-title {
+    color: #1E2A78;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    letter-spacing: -0.5px;
+}
+
+.section-subtitle {
+    color: #5A6B8C;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.features-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+/* Glassmorphism Card Style */
+.feature-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    
+    border-radius: 20px;
+    padding: 40px 35px;
+    
+    width: calc(50% - 30px);
+    min-width: 320px;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    
+    box-shadow: 0 10px 30px rgba(30, 42, 120, 0.05);
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(30, 42, 120, 0.12);
+    border-color: #1E2A78;
+    background: white;
+}
+
+.icon-box {
+    width: 50px;
+    height: 50px;
+    background-color: #EAF6FF;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+    transition: background-color 0.3s ease;
+}
+
+.icon-box svg {
+    width: 24px;
+    height: 24px;
+    stroke: #1E2A78;
+    transition: stroke 0.3s ease;
+}
+
+.feature-card:hover .icon-box {
+    background-color: #1E2A78;
+}
+
+.feature-card:hover .icon-box svg {
+    stroke: #ffffff;
+}
+
+.feature-card h3 {
+    color: #1E2A78;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.feature-card p {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* ================= RESPONSIVE DESIGN ================= */
+
+/* Tablet */
+@media (max-width: 900px) {
+    .main-heading {
+        font-size: 3rem;
+    }
+    .hero-section {
+        min-height: auto;
+        padding-bottom: 80px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    /* Navbar */
+    .nav-links {
+        display: none; /* Hidden for simplicity on mobile */
+    }
+    .mobile-menu-icon {
+        display: block;
+    }
+
+    /* Hero */
+    .hero-section {
+        padding-top: 100px;
+    }
+    .main-heading {
+        font-size: 2.2rem;
+        margin-bottom: 25px;
+    }
+    .hero-description {
+        font-size: 1rem;
+        margin-bottom: 35px;
+    }
+    .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Features */
+    .features-section {
+        padding: 60px 0;
+    }
+    .feature-card {
+        width: 100%;
+        min-width: unset;
+    }
+}
