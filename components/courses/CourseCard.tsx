@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, Users, BookOpen, Star } from "lucide-react";
+import { Clock, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
@@ -66,12 +66,7 @@ export default function CourseCard({ course, isPurchased = false }: CourseCardPr
                         {level}
                     </Badge>
                 </div>
-                <div className="absolute top-3 right-3">
-                    <Badge className="bg-white/90 text-slate-700 hover:bg-white font-bold px-2 py-1 backdrop-blur-sm border-none shadow-sm flex items-center gap-1">
-                        <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-                        {rating}
-                    </Badge>
-                </div>
+                {/* Rating Removed */}
             </div>
 
             <CardContent className="flex-1 p-5 pt-6">
@@ -104,10 +99,7 @@ export default function CourseCard({ course, isPurchased = false }: CourseCardPr
                         <Clock className="w-4 h-4" />
                         <span>{durationWeeks > 0 ? `${durationWeeks} weeks` : "Self-paced"}</span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                        <Users className="w-4 h-4" />
-                        <span>{enrollments.toLocaleString()}</span>
-                    </div>
+                    {/* Enrollment Removed */}
                 </div>
 
                 <div className="flex items-center justify-between w-full mt-1">
