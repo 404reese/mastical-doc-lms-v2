@@ -23,6 +23,7 @@ interface Instructor {
 export default function NewCoursePage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [uploadingImage, setUploadingImage] = useState(false);
     const [instructors, setInstructors] = useState<Instructor[]>([]);
 
     const [formData, setFormData] = useState({
@@ -59,6 +60,32 @@ export default function NewCoursePage() {
 
     const handleSelectChange = (name: string, value: string) => {
         setFormData({ ...formData, [name]: value });
+    };
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploadingImage(true);
+        const formDataUpload = new FormData();
+        formDataUpload.append('file', file);
+
+        try {
+            const res = await fetch('/api/upload?type=thumbnail', {
+                method: 'POST',
+                body: formDataUpload,
+            });
+
+            if (!res.ok) throw new Error('Upload failed');
+
+            const data = await res.json();
+            setFormData(prev => ({ ...prev, previewImageLink: data.url }));
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            alert('Failed to upload image');
+        } finally {
+            setUploadingImage(false);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -243,19 +270,32 @@ export default function NewCoursePage() {
 
                             {/* Preview Image */}
                             <div className="space-y-2">
-                                <Label htmlFor="previewImageLink">Preview Image Link</Label>
-                                <Input
-                                    id="previewImageLink"
-                                    name="previewImageLink"
-                                    placeholder="https://..."
-                                    value={formData.previewImageLink}
-                                    onChange={handleChange}
-                                />
+                                <Label htmlFor="previewImage">Preview Image</Label>
+                                <div className="flex flex-col gap-2">
+                                    <Input
+                                        id="previewImage"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        disabled={uploadingImage}
+                                    />
+                                    {uploadingImage && <p className="text-sm text-muted-foreground">Uploading...</p>}
+                                    {formData.previewImageLink && (
+                                        <div className="relative aspect-video w-full mt-2 overflow-hidden rounded-md border">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                src={formData.previewImageLink}
+                                                alt="Preview"
+                                                className="object-cover w-full h-full"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
                         <div className="flex justify-end pt-4">
-                            <Button type="submit" disabled={loading}>
+                            <Button type="submit" disabled={loading || uploadingImage}>
                                 {loading ? 'Creating...' : 'Create Course'}
                             </Button>
                         </div>

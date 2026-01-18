@@ -5,12 +5,6 @@ import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
-import {
     Table,
     TableBody,
     TableCell,
@@ -34,8 +28,26 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Plus, PlayCircle, Loader2 } from 'lucide-react';
+import { Plus, PlayCircle, Loader2, GripVertical } from 'lucide-react';
 import { formatDuration } from '@/lib/utils';
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent,
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+    useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
 interface Video {
     _id: string;
     title: string;
@@ -57,6 +69,62 @@ interface Module {
 interface Instructor {
     _id: string;
     name: string;
+}
+
+interface SortableRowProps {
+    video: Video;
+    onEdit: (video: Video) => void;
+    onDelete: (id: string) => void;
+}
+
+function SortableRow({ video, onEdit, onDelete }: SortableRowProps) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({ id: video._id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
+    return (
+        <TableRow ref={setNodeRef} style={style} >
+            <TableCell className="w-[50px]">
+                <div {...attributes} {...listeners} className="cursor-grab">
+                    <GripVertical className="h-5 w-5 text-gray-400" />
+                </div>
+            </TableCell>
+            <TableCell className="font-medium group flex items-center gap-3">
+                <div className="bg-slate-100 p-2 rounded-full">
+                    <PlayCircle className="w-5 h-5 text-slate-600" />
+                </div>
+                <span>{video.title}</span>
+            </TableCell>
+            <TableCell>{formatDuration(video.duration)}</TableCell>
+            <TableCell className="text-right space-x-2">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800"
+                    onClick={() => onEdit(video)}
+                >
+                    Edit
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800"
+                    onClick={() => onDelete(video._id)}
+                >
+                    Delete
+                </Button>
+            </TableCell>
+        </TableRow>
+    );
 }
 
 export default function ModulePage(props: { params: Promise<{ courseId: string; moduleId: string }> }) {
@@ -81,6 +149,7 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
         instructor: '',
         notes: '',
         notesUrl: '',
+        position: '',
     });
     const [editFormData, setEditFormData] = useState({
         title: '',
@@ -93,6 +162,13 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
     });
     const [isUploading, setIsUploading] = useState(false);
     const [fetchingDuration, setFetchingDuration] = useState(false);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
 
     // Helpers
     const fetchVimeoDuration = async (url: string): Promise<number | null> => {
@@ -107,14 +183,6 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
         }
     };
 
-    // Fetch data function needs to be improved because we don't have a direct API to get ONE module. 
-    // We only implemented Create Module.
-    // The Course API: GET /api/admin/courses/[id] populates modules and videos.
-    // So we can fetch the course and find the module.
-    // OR create a specific GET /api/admin/modules/[id] endpoint. 
-    // Given I didn't create that endpoint in the plan, I'll fetch the COURSE and then filter.
-    // This is slightly inefficient but works for now as per plan constraints.
-
     useEffect(() => {
         async function fetchData() {
             try {
@@ -126,6 +194,10 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
                 if (courseRes.ok) {
                     const course = await courseRes.json();
                     const mod = course.modules.find((m: any) => m._id === params.moduleId);
+                    if (mod) {
+                        // Ensure videos are sorted by position initially
+                        mod.videos?.sort((a: Video, b: Video) => (a.position || 0) - (b.position || 0));
+                    }
                     setModuleData(mod || null);
                 }
 
@@ -209,6 +281,12 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
         e.preventDefault();
         setSubmitting(true);
         try {
+            // Determine position: explicitly provided OR defaulted to end
+            let position = moduleData?.videos.length || 0;
+            if (formData.position !== '') {
+                position = parseInt(formData.position) - 1; // User inputs 1-based index
+            }
+
             const res = await fetch('/api/admin/videos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -216,7 +294,7 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
                     ...formData,
                     moduleId: params.moduleId,
                     duration: Number(formData.duration),
-                    position: moduleData?.videos.length || 0
+                    position: position
                 })
             });
 
@@ -226,6 +304,9 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
             const courseRes = await fetch(`/api/admin/courses/${params.courseId}`);
             const course = await courseRes.json();
             const mod = course.modules.find((m: any) => m._id === params.moduleId);
+            if (mod) {
+                mod.videos?.sort((a: Video, b: Video) => (a.position || 0) - (b.position || 0));
+            }
             setModuleData(mod);
 
             setIsDialogOpen(false);
@@ -238,6 +319,7 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
                 instructor: '',
                 notes: '',
                 notesUrl: '',
+                position: '',
             });
             router.refresh();
 
@@ -290,6 +372,9 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
             const courseRes = await fetch(`/api/admin/courses/${params.courseId}`);
             const course = await courseRes.json();
             const mod = course.modules.find((m: any) => m._id === params.moduleId);
+            if (mod) {
+                mod.videos?.sort((a: Video, b: Video) => (a.position || 0) - (b.position || 0));
+            }
             setModuleData(mod);
 
             setIsEditDialogOpen(false);
@@ -318,6 +403,41 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
         } catch (error) {
             console.error('Failed to delete video:', error);
             alert('Failed to delete video');
+        }
+    };
+
+    const handleDragEnd = async (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (over && active.id !== over.id) {
+            if (!moduleData) return;
+
+            setModuleData((prev) => {
+                if (!prev) return null;
+                const oldIndex = prev.videos.findIndex((v) => v._id === active.id);
+                const newIndex = prev.videos.findIndex((v) => v._id === over.id);
+
+                const newVideosFn = arrayMove(prev.videos, oldIndex, newIndex);
+
+                // Optimistically update positions in local state
+                const newVideos = newVideosFn.map((v, idx) => ({ ...v, position: idx }));
+
+                // Sync with backend
+                // We don't await this to keep UI snappy, but handle error if needed
+                fetch(`/api/admin/modules/${params.moduleId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ videos: newVideos.map(v => v._id) })
+                }).catch(err => {
+                    console.error("Failed to reorder", err);
+                    alert("Failed to save new order");
+                });
+
+                return {
+                    ...prev,
+                    videos: newVideos,
+                };
+            });
         }
     };
 
@@ -404,6 +524,18 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
                                 <Input name="title" value={formData.title} onChange={handleChange} required />
                             </div>
                             <div className="space-y-2">
+                                <Label>Position (Optional)</Label>
+                                <Input
+                                    name="position"
+                                    type="number"
+                                    placeholder={`Leave blank for last (current: ${moduleData.videos?.length + 1})`}
+                                    value={formData.position}
+                                    onChange={handleChange}
+                                    min="1"
+                                />
+                                <p className="text-xs text-gray-500">Enter 1 for top, etc.</p>
+                            </div>
+                            <div className="space-y-2">
                                 <Label>Video Link (URL)</Label>
                                 <Input name="link" value={formData.link} onChange={handleChange} required placeholder="https://..." />
                             </div>
@@ -455,7 +587,7 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
                                     </Label>
                                 </div>
                                 {formData.notesUrl && (
-                                    <div className="text-xs text-green-600 mt-1 truncate">
+                                    <div className="text-xs text-green-600 mt-1 break-all">
                                         Uploaded: {formData.notesUrl}
                                     </div>
                                 )}
@@ -473,54 +605,45 @@ export default function ModulePage(props: { params: Promise<{ courseId: string; 
             </div>
 
             <div className="bg-white rounded-md border">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Title</TableHead>
-                            <TableHead>Duration</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {moduleData.videos && moduleData.videos.length === 0 ? (
+                <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                >
+                    <Table>
+                        <TableHeader>
                             <TableRow>
-                                <TableCell colSpan={3} className="text-center py-10">
-                                    No videos in this module yet.
-                                </TableCell>
+                                <TableHead className="w-[50px]"></TableHead>
+                                <TableHead>Title</TableHead>
+                                <TableHead>Duration</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
-                        ) : (
-                            moduleData.videos?.map((video) => (
-                                <TableRow key={video._id}>
-                                    <TableCell className="font-medium group flex items-center gap-3">
-                                        <div className="bg-slate-100 p-2 rounded-full">
-                                            <PlayCircle className="w-5 h-5 text-slate-600" />
-                                        </div>
-                                        <span>{video.title}</span>
-                                    </TableCell>
-                                    <TableCell>{formatDuration(video.duration)}</TableCell>
-                                    <TableCell className="text-right space-x-2">
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800"
-                                            onClick={() => openEditVideo(video)}
-                                        >
-                                            Edit
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800"
-                                            onClick={() => handleDeleteVideo(video._id)}
-                                        >
-                                            Delete
-                                        </Button>
+                        </TableHeader>
+                        <TableBody>
+                            {moduleData.videos && moduleData.videos.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={4} className="text-center py-10">
+                                        No videos in this module yet.
                                     </TableCell>
                                 </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
+                            ) : (
+                                <SortableContext
+                                    items={moduleData.videos?.map(v => v._id) || []}
+                                    strategy={verticalListSortingStrategy}
+                                >
+                                    {moduleData.videos?.map((video) => (
+                                        <SortableRow
+                                            key={video._id}
+                                            video={video}
+                                            onEdit={openEditVideo}
+                                            onDelete={handleDeleteVideo}
+                                        />
+                                    ))}
+                                </SortableContext>
+                            )}
+                        </TableBody>
+                    </Table>
+                </DndContext>
             </div>
         </div >
     );

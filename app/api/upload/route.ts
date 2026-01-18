@@ -41,6 +41,9 @@ export async function POST(req: NextRequest) {
         if (uploadType === "instructor") {
             // Upload to instructor/ folder
             folderPath = "instructor";
+        } else if (uploadType === "thumbnail") {
+            // Upload to thumbnails/ folder
+            folderPath = "thumbnails";
         } else {
             // Upload to notes/{course_name}/ folder
             let courseName = "temp";
