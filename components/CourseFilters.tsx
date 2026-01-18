@@ -13,29 +13,21 @@ const LEVELS = ["All Levels", "Beginner", "Intermediate", "Advanced"];
 const LANGUAGES = ["All Languages", "English", "Bulgarian", "French", "German", "Hindi", "Hungarian", "Portuguese", "Romanian", "Russian", "Spanish"];
 
 export default function CourseFilters({ courses = [] }: CourseFiltersProps) {
-    const [activeTab, setActiveTab] = useState<"Level" | "Category" | "Language">("Level");
+    const [activeTab, setActiveTab] = useState<"Level" | "Language">("Level");
 
     // Filter states
     const [selectedLevel, setSelectedLevel] = useState("All Levels");
     const [selectedLanguage, setSelectedLanguage] = useState("All Languages");
-    const [selectedCategory, setSelectedCategory] = useState("All Categories");
-
-    // Extract unique categories from actual courses
-    const categories = useMemo(() => {
-        const unique = new Set(courses.map(c => c.category || "General"));
-        return ["All Categories", ...Array.from(unique)];
-    }, [courses]);
 
     // Derived filtered courses
     const filteredCourses = useMemo(() => {
         return courses.filter(course => {
             const matchesLevel = selectedLevel === "All Levels" || course.level === selectedLevel;
             const matchesLanguage = selectedLanguage === "All Languages" || course.language === selectedLanguage;
-            const matchesCategory = selectedCategory === "All Categories" || course.category === selectedCategory;
 
-            return matchesLevel && matchesLanguage && matchesCategory;
+            return matchesLevel && matchesLanguage;
         });
-    }, [courses, selectedLevel, selectedLanguage, selectedCategory]);
+    }, [courses, selectedLevel, selectedLanguage]);
 
     // Limit to 4 courses
     const displayedCourses = filteredCourses.slice(0, 4);
@@ -62,12 +54,6 @@ export default function CourseFilters({ courses = [] }: CourseFiltersProps) {
                         <i className="fa-regular fa-clock"></i> By Level
                     </button>
                     <button
-                        onClick={() => setActiveTab("Category")}
-                        className={`px-6 py-3 rounded-md font-semibold text-sm flex items-center gap-2 transition-colors ${activeTab === "Category" ? "bg-[#2563EB] text-white" : "bg-[#E2E8F0] text-[#475569] hover:bg-[#CBD5E1]"}`}
-                    >
-                        <i className="fa-solid fa-book-open"></i> By Category
-                    </button>
-                    <button
                         onClick={() => setActiveTab("Language")}
                         className={`px-6 py-3 rounded-md font-semibold text-sm flex items-center gap-2 transition-colors ${activeTab === "Language" ? "bg-[#2563EB] text-white" : "bg-[#E2E8F0] text-[#475569] hover:bg-[#CBD5E1]"}`}
                     >
@@ -84,16 +70,6 @@ export default function CourseFilters({ courses = [] }: CourseFiltersProps) {
                             className={`px-5 py-2 rounded-full font-medium text-sm transition-colors border ${selectedLevel === level ? "bg-[#EFF6FF] text-[#2563EB] border-[#2563EB]" : "bg-white text-[#64748b] border-[#E2E8F0] hover:bg-gray-50"}`}
                         >
                             {level}
-                        </button>
-                    ))}
-
-                    {activeTab === "Category" && categories.map(cat => (
-                        <button
-                            key={cat}
-                            onClick={() => setSelectedCategory(cat)}
-                            className={`px-5 py-2 rounded-full font-medium text-sm transition-colors border ${selectedCategory === cat ? "bg-[#EFF6FF] text-[#2563EB] border-[#2563EB]" : "bg-white text-[#64748b] border-[#E2E8F0] hover:bg-gray-50"}`}
-                        >
-                            {cat}
                         </button>
                     ))}
 
@@ -127,7 +103,6 @@ export default function CourseFilters({ courses = [] }: CourseFiltersProps) {
                             onClick={() => {
                                 setSelectedLevel("All Levels");
                                 setSelectedLanguage("All Languages");
-                                setSelectedCategory("All Categories");
                             }}
                         >
                             Clear all filters
